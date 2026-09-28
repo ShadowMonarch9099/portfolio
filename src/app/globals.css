@@ -1,26 +1,140 @@
 @import "tailwindcss";
 
+@custom-variant dark (&:where(.dark, .dark *));
+
+/* ---------- Colour tokens (WCAG AA checked in both themes) ---------- */
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --bg: #fafaf9;
+  --surface: #ffffff;
+  --surface-2: #f4f4f5;
+  --border: #e4e4e7;
+  --border-strong: #d4d4d8;
+  --fg: #18181b;
+  --muted: #52525b;
+  --accent: #4f46e5;
+  --accent-hover: #4338ca;
+  --accent-contrast: #ffffff;
+  --accent-soft: rgb(79 70 229 / 0.08);
+  --accent-ring: rgb(79 70 229 / 0.55);
+  --glow: rgb(79 70 229 / 0.14);
+  color-scheme: light;
+}
+
+.dark {
+  --bg: #0a0a0f;
+  --surface: #13131a;
+  --surface-2: #1b1b24;
+  --border: #26262f;
+  --border-strong: #34343f;
+  --fg: #ededf0;
+  --muted: #a1a1aa;
+  --accent: #818cf8;
+  --accent-hover: #a5b4fc;
+  --accent-contrast: #0a0a0f;
+  --accent-soft: rgb(129 140 248 / 0.12);
+  --accent-ring: rgb(129 140 248 / 0.6);
+  --glow: rgb(129 140 248 / 0.16);
+  color-scheme: dark;
 }
 
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --color-bg: var(--bg);
+  --color-surface: var(--surface);
+  --color-surface-2: var(--surface-2);
+  --color-border: var(--border);
+  --color-border-strong: var(--border-strong);
+  --color-fg: var(--fg);
+  --color-muted: var(--muted);
+  --color-accent: var(--accent);
+  --color-accent-hover: var(--accent-hover);
+  --color-accent-contrast: var(--accent-contrast);
+  --color-accent-soft: var(--accent-soft);
+  --font-sans: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
+  --font-mono: var(--font-geist-mono), ui-monospace, monospace;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+/* ---------- Base ---------- */
+html {
+  scroll-padding-top: 5rem;
+  -webkit-text-size-adjust: 100%;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  html {
+    scroll-behavior: smooth;
   }
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background: var(--bg);
+  color: var(--fg);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+}
+
+::selection {
+  background: var(--accent);
+  color: var(--accent-contrast);
+}
+
+:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+  border-radius: 6px;
+}
+
+/* Lock page scroll while the mobile menu or a dialog is open. */
+html:has(dialog[open]),
+html[data-menu-open] {
+  overflow: hidden;
+}
+
+/* ---------- Background decoration ---------- */
+.bg-grid {
+  background-image: radial-gradient(var(--border-strong) 1px, transparent 1px);
+  background-size: 24px 24px;
+  mask-image: radial-gradient(ellipse 70% 60% at 50% 0%, #000 30%, transparent 75%);
+}
+
+.bg-glow {
+  background: radial-gradient(ellipse 50% 45% at 70% 10%, var(--glow), transparent 70%);
+}
+
+/* ---------- Motion ----------
+   The inline theme script adds .motion-ok when JS runs and the user has not
+   asked for reduced motion. Only then are elements hidden before GSAP reveals
+   them, so content is always visible without JS or with reduced motion. */
+.motion-ok [data-hero],
+.motion-ok [data-reveal] {
+  visibility: hidden;
+}
+
+/* ---------- Dialog ---------- */
+dialog::backdrop {
+  background: rgb(10 10 15 / 0.6);
+  backdrop-filter: blur(4px);
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  dialog[open] {
+    animation: dialog-in 220ms cubic-bezier(0.2, 0.8, 0.2, 1);
+  }
+  dialog[open]::backdrop {
+    animation: fade-in 220ms ease-out;
+  }
+}
+
+@keyframes dialog-in {
+  from {
+    opacity: 0;
+    transform: translateY(12px) scale(0.98);
+  }
+}
+
+@keyframes fade-in {
+  from {
+    opacity: 0;
+  }
 }
