@@ -1,5 +1,4 @@
 import { ImageResponse } from "next/og";
-import { profile } from "@/data/profile";
 
 export const size = { width: 180, height: 180 };
 export const contentType = "image/png";
@@ -14,14 +13,18 @@ export default function AppleIcon() {
           display: "flex",
           alignItems: "center",
           justifyContent: "center",
-          background: "#4f46e5",
-          color: "#ffffff",
-          fontSize: 84,
-          fontWeight: 700,
-          letterSpacing: -3,
+          background: "#0c0b0a",
         }}
       >
-        {profile.initials}
+        <div
+          style={{
+            width: 84,
+            height: 84,
+            borderRadius: 999,
+            background: "radial-gradient(circle at 40% 38%, #fff0dc 0%, #ffb07a 45%, #ff7a3d 100%)",
+            boxShadow: "0 0 50px 12px rgba(255,122,61,0.5)",
+          }}
+        />
       </div>
     ),
     size,

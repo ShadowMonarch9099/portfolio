@@ -1,28 +1,30 @@
-import { About } from "@/components/About";
-import { Achievements } from "@/components/Achievements";
-import { Contact } from "@/components/Contact";
-import { ExperienceTimeline } from "@/components/ExperienceTimeline";
-import { Footer } from "@/components/Footer";
-import { Hero } from "@/components/Hero";
-import { Motion } from "@/components/Motion";
-import { Nav } from "@/components/Nav";
-import { Projects } from "@/components/Projects";
-import { SkillsGrid } from "@/components/SkillsGrid";
+import { Hero } from "@/components/home/Hero";
+import { Origin } from "@/components/home/Origin";
+import { Principles } from "@/components/home/Principles";
+import { WorkStops } from "@/components/home/WorkStops";
+import { Experience } from "@/components/home/Experience";
+import { Loadout } from "@/components/home/Loadout";
+import { OffClock } from "@/components/home/OffClock";
+import { Closing } from "@/components/home/Closing";
+import { JourneyTracker } from "@/components/JourneyTracker";
+import { HUD } from "@/components/HUD";
+import { Motion } from "@/components/Lazy";
 
 export default function Home() {
   return (
     <>
-      <Nav />
       <main id="main" tabIndex={-1} className="outline-none">
         <Hero />
-        <About />
-        <ExperienceTimeline />
-        <Projects />
-        <SkillsGrid />
-        <Achievements />
-        <Contact />
+        <Origin />
+        <Principles />
+        <WorkStops />
+        <Experience />
+        <Loadout />
+        <OffClock />
+        <Closing />
       </main>
-      <Footer />
+      <HUD />
+      <JourneyTracker />
       <Motion />
     </>
   );

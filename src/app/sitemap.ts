@@ -1,13 +1,14 @@
 import type { MetadataRoute } from "next";
-import { profile } from "@/data/profile";
+import { profile, work } from "@/data/profile";
 
 export default function sitemap(): MetadataRoute.Sitemap {
   return [
-    {
-      url: profile.siteUrl,
+    { url: profile.siteUrl, lastModified: new Date(), changeFrequency: "monthly", priority: 1 },
+    ...work.map((w) => ({
+      url: `${profile.siteUrl}/work/${w.slug}`,
       lastModified: new Date(),
-      changeFrequency: "monthly",
-      priority: 1,
-    },
+      changeFrequency: "yearly" as const,
+      priority: 0.8,
+    })),
   ];
 }
