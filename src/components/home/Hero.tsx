@@ -2,49 +2,70 @@ import { profile } from "@/data/profile";
 import { Stop } from "./Stop";
 
 export function Hero() {
+  const { hero, player } = profile;
   return (
-    <Stop stop="hero" id="top" label="Introduction" className="!items-end pb-20 sm:!items-center">
-      <p className="hud mb-8 text-muted">
-        {profile.role} <span aria-hidden="true">·</span> {profile.location}{" "}
-        <span className="hidden sm:inline">
-          <span aria-hidden="true">·</span> 18.52°N 73.86°E
-        </span>
+    <Stop stop="hero" id="top" label="Introduction" className="!items-end pb-24 sm:!items-center">
+      <p className="pixel mb-7 flex items-center gap-2 text-muted">
+        <span className="text-accent">▶</span> Player 1 <span aria-hidden="true">·</span> {profile.location}
       </p>
 
-      <h1 className="display text-[clamp(3.1rem,8.2vw,8.25rem)] text-balance">
-        {profile.hero.lead} <em className="text-accent">{profile.hero.emphasis}</em>
+      {/* Three sizes, three weights: a small lead-in, a big line, and a huge glitching word. */}
+      <h1 className="display">
+        <span className="block text-[clamp(1.35rem,2.6vw,2.2rem)] font-medium tracking-tight text-muted">{hero.lead}</span>{" "}
+        <span className="mt-2 block text-[clamp(2.8rem,6.6vw,6.5rem)] font-extrabold uppercase leading-[0.9] tracking-[-0.03em]">
+          {hero.middle}
+        </span>{" "}
+        <span className="glitch inline-block text-[clamp(4.2rem,10.5vw,10rem)] font-extrabold uppercase leading-[0.82] tracking-[-0.04em] text-accent">
+          {hero.emphasis}
+        </span>
       </h1>
 
-      <p className="mt-8 max-w-[34rem] text-lg leading-relaxed text-muted text-pretty sm:text-xl">
-        {profile.hero.intro}
-      </p>
+      <p className="mt-6 max-w-[34rem] text-lg leading-relaxed text-muted text-pretty">{hero.intro}</p>
 
-      <div data-reveal className="mt-10 flex flex-wrap items-center gap-4">
-        <a
-          href="#origin"
-          data-magnetic
-          className="group inline-flex h-14 items-center gap-3 rounded-full bg-fg pl-7 pr-6 font-medium text-bg transition-colors hover:bg-accent hover:text-accent-contrast"
-        >
-          Start the journey
-          <span aria-hidden="true" className="transition-transform duration-500 group-hover:translate-y-1">
-            ↓
-          </span>
+      <div data-reveal className="mt-7 flex flex-wrap items-center gap-4">
+        <a href="#origin" data-magnetic className="btn">
+          Press start <span aria-hidden="true">▶</span>
         </a>
-        <a
-          href={profile.resumeUrl}
-          download
-          data-magnetic
-          className="inline-flex h-14 items-center rounded-full border border-line-strong px-7 font-medium transition-colors hover:border-fg"
-        >
-          Download résumé
+        <a href={profile.resumeUrl} download data-magnetic className="btn btn-ghost">
+          Résumé <span aria-hidden="true">↓</span>
         </a>
       </div>
 
-      <p aria-hidden="true" className="hud absolute bottom-8 left-5 hidden items-center gap-3 text-muted sm:left-8 sm:flex lg:left-12">
-        <span className="relative block h-8 w-px overflow-hidden bg-line-strong">
-          <span className="absolute inset-x-0 top-0 h-1/2 animate-[scrollcue_2.2s_ease-in-out_infinite] bg-fg motion-reduce:animate-none" />
-        </span>
-        Scroll to travel
+      {/* Player card */}
+      <dl data-reveal className="panel mt-8 grid max-w-[34rem] grid-cols-2 gap-x-6 gap-y-4 p-5 sm:grid-cols-3">
+        <div>
+          <dt className="pixel text-[0.65rem] text-muted">Class</dt>
+          <dd className="display mt-1 text-base font-semibold">{player.class}</dd>
+        </div>
+        <div>
+          <dt className="pixel text-[0.65rem] text-muted">Main</dt>
+          <dd className="display mt-1 text-base font-semibold">{player.main}</dd>
+        </div>
+        <div className="col-span-2 sm:col-span-1">
+          <dt className="pixel text-[0.65rem] text-muted">Base</dt>
+          <dd className="display mt-1 text-base font-semibold">{player.base}</dd>
+        </div>
+        <div className="col-span-2 sm:col-span-3">
+          <dt className="pixel text-[0.65rem] text-muted">Build</dt>
+          <dd className="mt-2">
+            <div className="flex h-2.5 gap-0.5" role="img" aria-label={player.build.map((b) => `${b.label} ${b.value}%`).join(", ")}>
+              {player.build.map((b, i) => (
+                <span key={b.label} style={{ width: `${b.value}%` }} className={i === 0 ? "bg-accent" : "bg-signal"} />
+              ))}
+            </div>
+            <div aria-hidden="true" className="pixel mt-2 flex justify-between text-[0.65rem]">
+              {player.build.map((b, i) => (
+                <span key={b.label} className={i === 0 ? "text-accent" : "text-signal"}>
+                  {b.label} {b.value}%
+                </span>
+              ))}
+            </div>
+          </dd>
+        </div>
+      </dl>
+
+      <p aria-hidden="true" className="pixel mt-10 hidden items-center gap-3 text-muted sm:flex">
+        <span className="blink text-accent">▼</span> Scroll to play
       </p>
     </Stop>
   );

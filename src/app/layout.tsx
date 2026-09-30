@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from "next";
-import { Hanken_Grotesk, Instrument_Serif, JetBrains_Mono } from "next/font/google";
+import { Chakra_Petch, Oxanium, Silkscreen } from "next/font/google";
 import { profile } from "@/data/profile";
 import { ThemeScript } from "@/components/ThemeScript";
 import { Header } from "@/components/Header";
@@ -8,9 +8,17 @@ import { SmoothScroll } from "@/components/Lazy";
 import { SceneRoot } from "@/components/scene/SceneRoot";
 import "./globals.css";
 
-const display = Instrument_Serif({ variable: "--font-display", subsets: ["latin"], weight: "400", style: ["normal", "italic"] });
-const body = Hanken_Grotesk({ variable: "--font-body", subsets: ["latin"], preload: false });
-const hud = JetBrains_Mono({ variable: "--font-hud", subsets: ["latin"], weight: "400", preload: false });
+// Oxanium: angular, game-UI headlines. Chakra Petch: squared "tech" body text with a
+// real italic. Silkscreen: pixel font for short HUD labels only.
+const heading = Oxanium({ variable: "--font-heading", subsets: ["latin"] });
+const body = Chakra_Petch({
+  variable: "--font-body",
+  subsets: ["latin"],
+  weight: ["400", "500", "600"],
+  style: ["normal", "italic"],
+  preload: false,
+});
+const pixel = Silkscreen({ variable: "--font-px", subsets: ["latin"], weight: ["400", "700"], preload: false });
 
 export const metadata: Metadata = {
   metadataBase: new URL(profile.siteUrl),
@@ -43,7 +51,7 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
     <html
       lang="en"
       suppressHydrationWarning
-      className={`${display.variable} ${body.variable} ${hud.variable}`}
+      className={`${heading.variable} ${body.variable} ${pixel.variable}`}
     >
       <head>
         <ThemeScript />

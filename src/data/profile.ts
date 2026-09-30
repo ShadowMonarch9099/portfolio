@@ -73,10 +73,23 @@ export const profile = {
   },
 
   hero: {
-    lead: "I build the part of software people actually",
+    /** Shown small, then large, then huge: "I build the part of software / people actually / see." */
+    lead: "I build the part of software",
+    middle: "people actually",
     emphasis: "see.",
     intro:
       "Frontend developer from Pune. I care about three things: that it's fast, that it's easy to use, and that it looks right. Final-year AI & Data Science student, graduating May 2027.",
+  },
+
+  /** The "player card" in the hero. `build` is how my focus splits between frontend and backend. */
+  player: {
+    class: "Frontend Developer",
+    main: "React · Next.js · TypeScript",
+    base: "Pune, India",
+    build: [
+      { label: "Frontend", value: 70 },
+      { label: "Backend", value: 30 },
+    ],
   },
 
   origin: {

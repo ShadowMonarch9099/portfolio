@@ -19,7 +19,7 @@ export default function OpengraphImage() {
           background: "#0c0b0a",
           color: "#efe9df",
           padding: 80,
-          fontFamily: "serif",
+          fontFamily: "sans-serif",
         }}
       >
         {lines.map((i) => (
@@ -52,7 +52,7 @@ export default function OpengraphImage() {
             {`${profile.name.toUpperCase()} · ${profile.role.toUpperCase()}`}
           </div>
           <div style={{ display: "flex", flexWrap: "wrap", fontSize: 76, lineHeight: 1.02, letterSpacing: -2 }}>
-            {profile.hero.lead}&nbsp;<span style={{ color: "#ff7a3d", fontStyle: "italic" }}>{profile.hero.emphasis}</span>
+            {`${profile.hero.lead} ${profile.hero.middle}`}&nbsp;<span style={{ color: "#ff7a3d" }}>{profile.hero.emphasis.toUpperCase()}</span>
           </div>
         </div>
       </div>

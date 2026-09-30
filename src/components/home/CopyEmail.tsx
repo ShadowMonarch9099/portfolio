@@ -17,17 +17,16 @@ export function CopyEmail({ email }: { email: string }) {
   }
 
   return (
-    <div className="flex items-baseline gap-4 py-5">
-      <span className="hud w-16 shrink-0 text-muted sm:w-24">Email</span>
-      <a href={`mailto:${email}`} className="display min-w-0 flex-1 text-xl transition-colors [overflow-wrap:anywhere] hover:text-accent sm:text-3xl">
+    <div className="flex items-center gap-4 py-5">
+      <span className="pixel w-16 shrink-0 text-[0.65rem] text-muted sm:w-24">Email</span>
+      <a
+        href={`mailto:${email}`}
+        className="display min-w-0 flex-1 text-xl font-semibold transition-colors [overflow-wrap:anywhere] hover:text-accent sm:text-3xl"
+      >
         {email}
       </a>
-      <button
-        type="button"
-        onClick={copy}
-        className="hud shrink-0 rounded-full border border-line-strong px-3 py-1.5 transition-colors hover:border-fg"
-      >
-        <span aria-live="polite">{copied ? "Copied" : "Copy"}</span>
+      <button type="button" onClick={copy} className="btn btn-ghost btn-sm shrink-0">
+        <span aria-live="polite">{copied ? "Copied!" : "Copy"}</span>
       </button>
     </div>
   );

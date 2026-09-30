@@ -13,8 +13,8 @@ interface MediaFrameProps {
 /** A screenshot or video in a thin frame, or a designed placeholder until one is added. */
 export function MediaFrame({ media, placeholder, aspect = "aspect-[16/10]", sizes, preload }: MediaFrameProps) {
   return (
-    <figure data-reveal>
-      <div className={`relative ${aspect} overflow-hidden rounded-sm border border-line bg-bg-2`}>
+    <figure data-reveal className="brackets p-2">
+      <div className={`relative ${aspect} overflow-hidden bg-bg-2`}>
         {media?.kind === "video" ? (
           <video
             src={media.src}
@@ -34,12 +34,12 @@ export function MediaFrame({ media, placeholder, aspect = "aspect-[16/10]", size
               aria-hidden="true"
               className="absolute inset-0 opacity-60 [background-image:linear-gradient(var(--line)_1px,transparent_1px),linear-gradient(90deg,var(--line)_1px,transparent_1px)] [background-size:32px_32px]"
             />
-            <span className="hud relative text-muted">Coming soon</span>
-            <span className="display relative text-2xl text-muted sm:text-3xl">{placeholder}</span>
+            <span className="pixel relative text-muted">Loading… coming soon</span>
+            <span className="display relative text-2xl font-bold uppercase text-muted sm:text-3xl">{placeholder}</span>
           </div>
         )}
       </div>
-      {media && <figcaption className="hud mt-3 text-muted">{media.alt}</figcaption>}
+      {media && <figcaption className="mt-2 px-1 text-sm italic text-muted">{media.alt}</figcaption>}
     </figure>
   );
 }

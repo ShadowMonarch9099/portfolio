@@ -3,9 +3,10 @@
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { SplitText } from "gsap/SplitText";
+import { ScrambleTextPlugin } from "gsap/ScrambleTextPlugin";
 import { useGSAP } from "@gsap/react";
 
-gsap.registerPlugin(useGSAP, ScrollTrigger, SplitText);
+gsap.registerPlugin(useGSAP, ScrollTrigger, SplitText, ScrambleTextPlugin);
 
 /**
  * Page animations. Mount once per page.
@@ -13,6 +14,7 @@ gsap.registerPlugin(useGSAP, ScrollTrigger, SplitText);
  * - [data-reveal]  fades up when scrolled into view
  * - [data-scrub]   lights up (heading colour and rule) as it scrolls into the middle of the screen
  * - [data-magnetic] is pulled gently towards the cursor ("gravity")
+ * - [data-scramble] decodes like a game UI when it scrolls into view
  * Everything is skipped for visitors who prefer reduced motion.
  */
 export default function Motion() {
@@ -47,6 +49,17 @@ export default function Motion() {
               }),
             );
           },
+        });
+      });
+
+      gsap.utils.toArray<HTMLElement>("[data-scramble]").forEach((el) => {
+        const text = el.textContent ?? "";
+        ScrollTrigger.create({
+          trigger: el,
+          start: "top 92%",
+          once: true,
+          onEnter: () =>
+            gsap.to(el, { duration: 0.9, delay: 0.15, scrambleText: { text, chars: "01<>/#*+▮", speed: 0.5 } }),
         });
       });
 

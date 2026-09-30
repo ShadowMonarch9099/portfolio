@@ -1,25 +1,32 @@
 import { profile } from "@/data/profile";
 import { Eyebrow, Stop } from "./Stop";
 
-/** A small hexagonal badge, like an in-game achievement icon. */
-function Badge({ n }: { n: number }) {
+/** A pixel trophy, like an in-game achievement icon. */
+function Trophy() {
   return (
-    <svg viewBox="0 0 40 44" aria-hidden="true" className="size-11 shrink-0 text-accent">
-      <path d="M20 2 37 11.5v21L20 42 3 32.5v-21Z" fill="none" stroke="currentColor" strokeWidth="1.5" />
-      <text x="20" y="27" textAnchor="middle" className="fill-current font-mono text-[11px]">
-        {String(n).padStart(2, "0")}
-      </text>
+    <svg viewBox="0 0 16 16" aria-hidden="true" className="size-10 shrink-0 text-accent" shapeRendering="crispEdges">
+      <path
+        fill="currentColor"
+        d="M4 1h8v1h2v4h-1v1h-1v1h-1v1H9v2h2v1h1v3H4v-3h1v-1h2V9H5V8H4V7H3V6H2V2h2V1Zm0 2H3v2h1V3Zm8 0v2h1V3h-1Z"
+      />
     </svg>
   );
 }
 
 export function OffClock() {
   const { offClock, achievements, now } = profile;
+  // "When I'm not coding, I'm probably gaming." → small lead-in + big punchline.
+  const [lead, ...rest] = offClock.title.split(", ");
   return (
-    <Stop stop="offclock" id="off-clock" label="Off the clock">
-      <Eyebrow>Ch. 06 — Off the clock</Eyebrow>
-      <h2 data-split className="display text-[clamp(2.4rem,5.2vw,4.75rem)]">
-        {offClock.title}
+    <Stop stop="offclock" id="off-clock" label="Off the clock" level="06">
+      <Eyebrow>LVL 06 · Off the clock</Eyebrow>
+      <h2 className="display">
+        <span data-reveal className="block text-[clamp(1.4rem,2.8vw,2.2rem)] font-medium text-muted">
+          {lead},
+        </span>{" "}
+        <span data-split className="block text-[clamp(2.6rem,6.4vw,5.6rem)] font-extrabold uppercase leading-[0.9] tracking-[-0.03em]">
+          {rest.join(", ")}
+        </span>
       </h2>
       <div className="mt-8 space-y-4 text-lg leading-relaxed text-muted">
         {offClock.body.map((p) => (
@@ -29,34 +36,30 @@ export function OffClock() {
         ))}
       </div>
 
-      <h3 data-reveal className="hud mt-14 text-muted">
-        Achievements unlocked · {achievements.length}/{achievements.length}
+      <h3 data-reveal className="pixel mt-12 flex items-center justify-between text-muted">
+        <span>Achievements</span>
+        <span className="text-signal">
+          {achievements.length}/{achievements.length} unlocked
+        </span>
       </h3>
-      <ul className="mt-5 space-y-3">
-        {achievements.map((a, i) => (
-          <li
-            key={a.title}
-            data-reveal
-            className="flex items-center gap-4 rounded-sm border border-line bg-bg/60 p-4 backdrop-blur-sm transition-colors hover:border-line-strong"
-          >
-            <Badge n={i + 1} />
+      <ul className="mt-4 space-y-2.5">
+        {achievements.map((a) => (
+          <li key={a.title} data-reveal className="panel flex items-center gap-4 p-4">
+            <Trophy />
             <div>
-              <p className="font-medium">{a.title}</p>
+              <p className="pixel text-[0.6rem] text-signal">Achievement unlocked</p>
+              <p className="display mt-0.5 text-lg font-bold">{a.title}</p>
               <p className="text-sm leading-relaxed text-muted text-pretty">{a.detail}</p>
             </div>
           </li>
         ))}
       </ul>
 
-      <div data-reveal className="mt-14 flex gap-4">
-        <span aria-hidden="true" className="relative mt-2 flex size-2.5 shrink-0">
-          <span className="absolute inset-0 animate-ping rounded-full bg-accent opacity-60 motion-reduce:animate-none" />
-          <span className="relative size-2.5 rounded-full bg-accent" />
-        </span>
-        <div>
-          <p className="hud text-muted">Now</p>
-          <p className="mt-2 max-w-lg leading-relaxed text-pretty">{now}</p>
-        </div>
+      <div data-reveal className="brackets brackets-accent mt-12 p-5">
+        <p className="pixel flex items-center gap-2 text-accent">
+          <span aria-hidden="true" className="blink">▶</span> Current quest
+        </p>
+        <p className="mt-3 max-w-lg text-lg leading-relaxed text-pretty">{now}</p>
       </div>
     </Stop>
   );

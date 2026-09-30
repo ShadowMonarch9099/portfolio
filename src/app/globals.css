@@ -3,7 +3,8 @@
 @custom-variant dark (&:where(.dark, .dark *));
 
 /* ---------- Colour tokens ----------
-   Light is "paper and ink", dark is "deep space". One accent: a warm star orange.
+   Light is "paper and ink", dark is "deep space". The accent is a warm star
+   orange; --signal is a HUD teal used sparingly (status lights, XP bar).
    All text pairs meet WCAG AA. */
 :root {
   --bg: #f2ede4;
@@ -14,6 +15,7 @@
   --muted: #5e574e;
   --accent: #b3380a;
   --accent-contrast: #f7f3ec;
+  --signal: #0b6e62;
   --scrim: 242 237 228;
   color-scheme: light;
 }
@@ -27,6 +29,7 @@
   --muted: #a39b8f;
   --accent: #ff7a3d;
   --accent-contrast: #0c0b0a;
+  --signal: #5ee6d0;
   --scrim: 12 11 10;
   color-scheme: dark;
 }
@@ -40,9 +43,10 @@
   --color-muted: var(--muted);
   --color-accent: var(--accent);
   --color-accent-contrast: var(--accent-contrast);
+  --color-signal: var(--signal);
   --font-sans: var(--font-body), ui-sans-serif, system-ui, sans-serif;
-  --font-serif: var(--font-display), ui-serif, Georgia, serif;
-  --font-mono: var(--font-hud), ui-monospace, monospace;
+  --font-display: var(--font-heading), ui-sans-serif, system-ui, sans-serif;
+  --font-pixel: var(--font-px), ui-monospace, monospace;
   --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
 }
 
@@ -56,6 +60,7 @@ body {
   background: var(--bg);
   color: var(--fg);
   font-family: var(--font-sans);
+  font-size: 1.0625rem;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   transition: background-color 400ms ease, color 400ms ease;
@@ -85,25 +90,162 @@ html.lenis body {
   overflow: clip;
 }
 
-/* ---------- Type ---------- */
+/* ---------- Type system ----------
+   .display  Oxanium: headlines, from giant hero lines to card titles
+   .pixel    Silkscreen: short HUD labels, counters, badges, buttons
+   .meta     Oxanium caps: longer metadata (dates, stacks, captions)
+   Body copy is Chakra Petch; its italic is used for taglines and quotes. */
 .display {
-  font-family: var(--font-serif);
-  font-weight: 400;
-  letter-spacing: -0.025em;
-  line-height: 0.95;
+  font-family: var(--font-display);
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  line-height: 0.98;
 }
 
-.hud {
-  font-family: var(--font-mono);
-  font-size: 0.72rem;
-  letter-spacing: 0.08em;
+.pixel {
+  font-family: var(--font-pixel);
+  font-size: 0.8rem;
+  line-height: 1.4;
+  letter-spacing: 0.04em;
   text-transform: uppercase;
+}
+
+.meta {
+  font-family: var(--font-display);
+  font-size: 0.78rem;
+  font-weight: 500;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+/* Hollow numerals and words, for decoration only (always aria-hidden). */
+.outline-text {
+  color: transparent;
+  -webkit-text-stroke: 1.5px var(--line);
 }
 
 /* Masked line reveals (SplitText) */
 .split-line {
   padding-bottom: 0.08em;
   margin-bottom: -0.08em;
+}
+
+/* ---------- HUD shapes ---------- */
+/* Notched-corner buttons. The shape lives on pseudo-elements so focus rings
+   (which clip-path would cut off) stay visible on the element itself. */
+.btn {
+  --notch: 12px;
+  --btn-bg: var(--fg);
+  --btn-fg: var(--bg);
+  --btn-edge: var(--fg);
+  position: relative;
+  isolation: isolate;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.75rem;
+  height: 3.5rem;
+  padding: 0 1.75rem;
+  color: var(--btn-fg);
+  font-family: var(--font-pixel);
+  font-size: 0.8rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  transition: color 250ms ease;
+}
+.btn::before,
+.btn::after {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  clip-path: polygon(var(--notch) 0, 100% 0, 100% calc(100% - var(--notch)), calc(100% - var(--notch)) 100%, 0 100%, 0 var(--notch));
+  transition: background-color 250ms ease;
+}
+.btn::before {
+  inset: 0;
+  background: var(--btn-edge);
+}
+.btn::after {
+  inset: 1.5px;
+  background: var(--btn-bg);
+}
+.btn:hover {
+  --btn-bg: var(--accent);
+  --btn-edge: var(--accent);
+  --btn-fg: var(--accent-contrast);
+}
+.btn-ghost {
+  --btn-bg: var(--bg);
+  --btn-fg: var(--fg);
+  --btn-edge: var(--line-strong);
+}
+.btn-ghost:hover {
+  --btn-bg: var(--bg);
+  --btn-edge: var(--accent);
+  --btn-fg: var(--accent);
+}
+.btn-sm {
+  --notch: 8px;
+  height: 2.5rem;
+  padding: 0 1rem;
+  font-size: 0.7rem;
+}
+
+/* Corner brackets, like a targeting reticle around a panel or image. */
+.brackets {
+  --b: var(--line-strong);
+  --s: 14px;
+  background:
+    linear-gradient(var(--b), var(--b)) top left / var(--s) 1.5px,
+    linear-gradient(var(--b), var(--b)) top left / 1.5px var(--s),
+    linear-gradient(var(--b), var(--b)) top right / var(--s) 1.5px,
+    linear-gradient(var(--b), var(--b)) top right / 1.5px var(--s),
+    linear-gradient(var(--b), var(--b)) bottom left / var(--s) 1.5px,
+    linear-gradient(var(--b), var(--b)) bottom left / 1.5px var(--s),
+    linear-gradient(var(--b), var(--b)) bottom right / var(--s) 1.5px,
+    linear-gradient(var(--b), var(--b)) bottom right / 1.5px var(--s);
+  background-repeat: no-repeat;
+  transition: --b 300ms ease;
+}
+.brackets-accent,
+.brackets:hover {
+  --b: var(--accent);
+}
+
+/* A panel with one clipped corner. */
+.panel {
+  --cut: 16px;
+  position: relative;
+  isolation: isolate;
+}
+.panel::before,
+.panel::after {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  clip-path: polygon(0 0, calc(100% - var(--cut)) 0, 100% var(--cut), 100% 100%, 0 100%);
+}
+.panel::before {
+  inset: 0;
+  background: var(--line);
+  transition: background-color 300ms ease;
+}
+.panel::after {
+  inset: 1px;
+  background: rgb(var(--scrim) / 0.72);
+  backdrop-filter: blur(6px);
+}
+.panel:hover::before {
+  background: var(--line-strong);
+}
+
+/* Faint CRT scanlines. */
+.scanlines::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: repeating-linear-gradient(to bottom, transparent 0 2px, rgb(0 0 0 / 0.07) 2px 3px);
+  mix-blend-mode: multiply;
 }
 
 /* ---------- Scene fallbacks & scrims ---------- */
@@ -164,6 +306,47 @@ html.lenis body {
 .link-draw:hover,
 .link-draw:focus-visible {
   background-size: 100% 1px;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  /* An occasional chromatic "glitch" on a single word. */
+  .glitch {
+    animation: glitch 5s steps(1) infinite;
+  }
+  .glitch:hover {
+    animation-duration: 0.6s;
+  }
+  /* Blinking "press start" prompt and caret. */
+  .blink {
+    animation: blink 1.1s steps(1) infinite;
+  }
+}
+
+@keyframes glitch {
+  0%,
+  86%,
+  100% {
+    text-shadow: none;
+    transform: none;
+  }
+  88% {
+    text-shadow: -3px 0 var(--signal), 3px 0 var(--accent);
+    transform: translateX(2px) skewX(-6deg);
+  }
+  90% {
+    text-shadow: 3px 0 var(--signal), -3px 0 rgb(255 60 90 / 0.8);
+    transform: translateX(-3px);
+  }
+  92% {
+    text-shadow: -2px 0 var(--signal), 2px 0 var(--accent);
+    transform: none;
+  }
+}
+
+@keyframes blink {
+  50% {
+    opacity: 0;
+  }
 }
 
 @keyframes scrollcue {

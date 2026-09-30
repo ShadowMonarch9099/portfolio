@@ -27,7 +27,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
 function Section({ heading, children }: { heading: string; children: React.ReactNode }) {
   return (
     <section className="mt-20">
-      <h2 data-split className="display text-4xl sm:text-5xl">
+      <h2 data-split className="display text-3xl font-bold uppercase tracking-[-0.02em] sm:text-4xl">
         {heading}
       </h2>
       <div className="mt-6">{children}</div>
@@ -57,21 +57,24 @@ export default async function CaseStudyPage({ params }: { params: Promise<{ slug
       <main id="main" tabIndex={-1} className="outline-none">
         <article className="mx-auto max-w-[1440px] px-5 pb-32 pt-32 sm:px-8 sm:pt-40 lg:px-12">
           <div className="max-w-[46rem] lg:w-[56%]">
-            <Link href={`/#${study.slug}`} className="hud link-draw text-muted hover:text-fg">
-              ← Back to the journey
+            <Link href={`/#${study.slug}`} className="pixel link-draw text-muted hover:text-fg">
+              ◀ Back to the journey
             </Link>
 
-            <p className="hud mt-12 text-muted">
-              Case study {String(index + 1).padStart(2, "0")} / {String(work.length).padStart(2, "0")}
+            <p className="pixel mt-12 flex items-center gap-3 text-muted">
+              <span aria-hidden="true" className="size-2 bg-accent" />
+              Mission {String(index + 1).padStart(2, "0")}/{String(work.length).padStart(2, "0")} · Debrief
             </p>
-            <h1 className="display mt-4 text-[clamp(3.6rem,10vw,9rem)]">{study.title}</h1>
-            <p className="display mt-4 text-2xl italic leading-snug text-balance sm:text-4xl">{study.tagline}</p>
+            <h1 className="display mt-4 text-[clamp(3.4rem,9.5vw,8.5rem)] font-extrabold uppercase leading-[0.88] tracking-[-0.035em]">
+              {study.title}
+            </h1>
+            <p className="mt-5 text-2xl font-medium italic leading-snug text-balance sm:text-3xl">{study.tagline}</p>
 
-            <dl data-reveal className="mt-12 grid grid-cols-2 gap-x-8 gap-y-5 border-y border-line py-6 sm:grid-cols-4">
+            <dl data-reveal className="panel mt-12 grid grid-cols-2 gap-x-8 gap-y-5 p-6 sm:grid-cols-4">
               {meta.map((m) => (
                 <div key={m.label}>
-                  <dt className="hud text-muted">{m.label}</dt>
-                  <dd className="mt-1.5 text-pretty">{m.value}</dd>
+                  <dt className="pixel text-[0.65rem] text-muted">{m.label}</dt>
+                  <dd className="display mt-1.5 font-semibold text-pretty">{m.value}</dd>
                 </div>
               ))}
             </dl>
@@ -81,7 +84,7 @@ export default async function CaseStudyPage({ params }: { params: Promise<{ slug
                 target="_blank"
                 rel="noopener noreferrer"
                 data-reveal
-                className="link-draw mt-6 inline-block font-medium"
+                className="btn btn-ghost btn-sm mt-6"
               >
                 {study.liveUrl.replace(/^https?:\/\//, "")} ↗<span className="sr-only"> (opens in a new tab)</span>
               </a>
@@ -110,7 +113,7 @@ export default async function CaseStudyPage({ params }: { params: Promise<{ slug
               <ol className="border-t border-line">
                 {study.built.points.map((p, i) => (
                   <li key={p} data-reveal className="grid grid-cols-[2.5rem_1fr] gap-x-4 border-b border-line py-5">
-                    <span className="hud pt-1 text-accent">{String(i + 1).padStart(2, "0")}</span>
+                    <span className="pixel pt-1 text-accent">{String(i + 1).padStart(2, "0")}</span>
                     <p className="leading-relaxed text-pretty">{p}</p>
                   </li>
                 ))}
@@ -121,7 +124,7 @@ export default async function CaseStudyPage({ params }: { params: Promise<{ slug
               (block) =>
                 block && (
                   <Section key={block.heading} heading={block.heading}>
-                    <div className="space-y-5 border-l-2 border-accent pl-6 text-lg leading-relaxed">
+                    <div className="panel space-y-5 p-6 text-lg leading-relaxed sm:p-8">
                       {block.body.map((p) => (
                         <p key={p} data-reveal className="text-pretty">
                           {p}
@@ -133,9 +136,9 @@ export default async function CaseStudyPage({ params }: { params: Promise<{ slug
             )}
 
             <Section heading="Stack">
-              <ul data-reveal className="hud flex flex-wrap gap-2 normal-case tracking-normal">
+              <ul data-reveal className="flex flex-wrap gap-2">
                 {study.stack.map((s) => (
-                  <li key={s} className="rounded-full border border-line-strong px-3 py-1.5 text-[0.8rem]">
+                  <li key={s} className="meta border border-line-strong px-3 py-1.5 text-[0.72rem]">
                     {s}
                   </li>
                 ))}
@@ -162,8 +165,8 @@ export default async function CaseStudyPage({ params }: { params: Promise<{ slug
             href={`/work/${next.slug}`}
             className="group mt-32 block border-t border-line pt-10"
           >
-            <span className="hud text-muted">Next stop</span>
-            <span className="display mt-3 flex items-baseline gap-6 text-[clamp(3rem,9vw,8rem)] transition-colors group-hover:text-accent">
+            <span className="pixel text-muted">Next mission ▶</span>
+            <span className="display mt-3 flex items-baseline gap-6 text-[clamp(3rem,9vw,8rem)] font-extrabold uppercase tracking-[-0.035em] transition-colors group-hover:text-accent">
               {next.title}
               <span aria-hidden="true" className="text-[0.5em] transition-transform duration-500 group-hover:translate-x-3">
                 →
