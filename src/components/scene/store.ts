@@ -6,7 +6,7 @@
 export const sceneStore = {
   /** Continuous journey position: 0 = first stop, 1 = second stop, ... */
   progress: 0,
-  /** When set, the camera frames this case study's planet instead of the journey. */
+  /** When set, the camera frames this case study's waypoint instead of the journey. */
   focus: null as string | null,
   /** Scroll progress within a case-study page (0–1). */
   pageProgress: 0,

@@ -38,8 +38,10 @@ export interface CaseStudy {
   gallery: Media[];
   /** Placeholder labels for the gallery until real media is added. */
   galleryPlaceholders: string[];
-  /** Colour of this project's planet in the 3D scene. */
-  planet: { color: string; glow: string; kind: "planet" | "ringed" | "blackhole" };
+  /** Neon colour of this project's billboard in the 3D city. */
+  neon: string;
+  /** Small screenshot shown on the project's billboard (under /public). Leave out to show the title instead. */
+  billboard?: string;
 }
 
 export interface SkillGroup {
@@ -221,7 +223,8 @@ export const work: CaseStudy[] = [
       { src: "/work/meet/landing.jpg", alt: "Meet Recorder landing page" },
     ],
     galleryPlaceholders: ["Organisation dashboard", "Recording in progress", "AI summary and action items"],
-    planet: { color: "#e8683a", glow: "#ff9a5c", kind: "planet" },
+    neon: "#ff7a3d",
+    billboard: "/work/meet/billboard.jpg",
   },
   {
     slug: "thinkforge",
@@ -259,7 +262,8 @@ export const work: CaseStudy[] = [
       { src: "/work/thinkforge/progress.jpg", alt: "Weekly progress: XP, accuracy, topics and error patterns (sample data)" },
     ],
     galleryPlaceholders: ["Daily question", "Answer feedback", "Progress"],
-    planet: { color: "#d9b44a", glow: "#ffd98a", kind: "ringed" },
+    neon: "#ffd23d",
+    billboard: "/work/thinkforge/billboard.jpg",
   },
   {
     slug: "kalasetu",
@@ -291,7 +295,7 @@ export const work: CaseStudy[] = [
     },
     gallery: [],
     galleryPlaceholders: ["Language selection", "Capture and image studio", "Generated listing"],
-    planet: { color: "#4f9d7e", glow: "#8fdcb8", kind: "planet" },
+    neon: "#5ee6d0",
   },
   {
     slug: "space-time-lab",
@@ -324,7 +328,8 @@ export const work: CaseStudy[] = [
       { src: "/work/space-time-lab/side-view.jpg", alt: "Side view of the sandbox with the object library and experiments panel" },
     ],
     galleryPlaceholders: ["Spacetime grid bending around a star", "Rocket trajectory preview", "Challenges panel"],
-    planet: { color: "#15131a", glow: "#ff8a4c", kind: "blackhole" },
+    neon: "#ff3d8b",
+    billboard: "/work/space-time-lab/billboard.jpg",
   },
 ];
 

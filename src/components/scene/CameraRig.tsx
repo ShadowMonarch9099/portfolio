@@ -4,107 +4,116 @@ import { useMemo } from "react";
 import { useFrame, useThree } from "@react-three/fiber";
 import * as THREE from "three";
 import { sceneStore } from "./store";
-import { BODIES, restPosition } from "./world";
+import { live } from "./live";
+import { ROUTE, ROUTE_BOUNDS, WAYPOINTS, routeAt, toWorld } from "./world";
 
-interface Pose {
-  pos: THREE.Vector3;
-  target: THREE.Vector3;
-}
-
-/**
- * Camera pose for a stop. On wide screens the body sits to the right of the
- * text column; on tall screens it sits above the text.
- */
-function poseFor(index: number, wide: boolean): Pose {
-  const body = BODIES[index];
-  const [x, y, z] = restPosition(body);
-  const isHero = index === 0;
-  const isLast = index === BODIES.length - 1;
-
-  if (wide) {
-    const back = isHero ? 36 : isLast ? 32 : 22;
-    const up = isHero ? 15 : 7;
-    const side = isHero ? 16 : 12;
-    const lead = isHero ? 11 : 8.5;
-    return {
-      pos: new THREE.Vector3(x - side, y + up, z + back),
-      target: new THREE.Vector3(x - lead, y - (isHero ? 3 : 0.5), z),
-    };
-  }
-  const back = isHero ? 40 : isLast ? 30 : 26;
-  return {
-    pos: new THREE.Vector3(x, y + (isHero ? 18 : 10), z + back),
-    target: new THREE.Vector3(x, y - (isHero ? 9 : 5.5), z),
-  };
-}
-
-/** Close-up framing for a case-study page, pulled back slightly as you scroll. */
-function focusPose(id: string, wide: boolean, t: number, scroll: number): Pose | null {
-  const body = BODIES.find((b) => b.id === id);
-  if (!body) return null;
-  const [x, y, z] = restPosition(body);
-  const orbit = t * 0.05;
-  if (wide) {
-    const dist = 17 + scroll * 10;
-    return {
-      pos: new THREE.Vector3(x - 8 + Math.sin(orbit) * 1.5, y + 3 + scroll * 5, z + dist + Math.cos(orbit)),
-      target: new THREE.Vector3(x - 6, y - 0.5, z),
-    };
-  }
-  // Tall screens: keep the planet small and high, above the text.
-  const dist = 30 + scroll * 12;
-  return {
-    pos: new THREE.Vector3(x + Math.sin(orbit) * 1.5, y + 6, z + dist),
-    target: new THREE.Vector3(x, y - 13 - scroll * 6, z),
-  };
-}
-
+const BASE_FOV = 42;
 const smooth = (t: number) => t * t * (3 - 2 * t);
 
+/**
+ * Bird's-eye camera that follows the head of the GPS route.
+ * - Wide screens: the head sits right of centre, beside the text column.
+ * - Tall screens: the head sits above the text.
+ * - The last stop pulls back to show the whole route.
+ * - Case-study pages zoom in on their waypoint.
+ * - Scrolling fast widens the field of view a little ("speed boost").
+ */
 export function CameraRig() {
   const { camera, size } = useThree();
-  const current = useMemo(() => ({ target: new THREE.Vector3(), ready: false }), []);
-  const want = useMemo(() => ({ pos: new THREE.Vector3(), target: new THREE.Vector3() }), []);
+  const state = useMemo(
+    () => ({
+      target: new THREE.Vector3(),
+      wantPos: new THREE.Vector3(),
+      wantTarget: new THREE.Vector3(),
+      ready: false,
+      lastProgress: 0,
+      fov: BASE_FOV,
+    }),
+    [],
+  );
 
-  useFrame(({ clock }, dt) => {
+  useFrame((_, dt) => {
+    const cam = camera as THREE.PerspectiveCamera;
     const wide = size.width / size.height > 1.05;
     const reduced = sceneStore.reducedMotion;
-    const t = reduced ? 0 : clock.elapsedTime;
+    const max = WAYPOINTS.length - 1;
+    const progress = Math.min(Math.max(sceneStore.progress, 0), max);
 
-    const focused = sceneStore.focus ? focusPose(sceneStore.focus, wide, t, sceneStore.pageProgress) : null;
-    if (focused) {
-      want.pos.copy(focused.pos);
-      want.target.copy(focused.target);
+    // Where along the route are we? Reduced motion jumps straight to each stop.
+    let dist: number;
+    if (reduced) dist = ROUTE.stopDist[Math.round(progress)];
+    else {
+      const i = Math.floor(progress);
+      const f = smooth(progress - i);
+      dist = THREE.MathUtils.lerp(ROUTE.stopDist[i], ROUTE.stopDist[Math.min(i + 1, max)], f);
+    }
+
+    const focusIndex = sceneStore.focus ? WAYPOINTS.findIndex((w) => w.id === sceneStore.focus) : -1;
+    if (focusIndex >= 0) dist = ROUTE.stopDist[focusIndex];
+    live.headDist = dist;
+    const head = routeAt(dist);
+    live.head.set(head.x, 0, head.z);
+    live.current = focusIndex >= 0 ? focusIndex : Math.round(progress);
+
+    // Scroll speed (stops per second), smoothed.
+    const v = dt > 0 ? Math.abs(progress - state.lastProgress) / dt : 0;
+    state.lastProgress = progress;
+    live.speed += (Math.min(v / 2.5, 1) - live.speed) * Math.min(1, dt * 4);
+    if (reduced || focusIndex >= 0) live.speed = 0;
+
+    // End-of-journey overview.
+    live.overview = focusIndex >= 0 ? 0 : THREE.MathUtils.smoothstep(progress, max - 0.6, max);
+
+    const { wantPos, wantTarget } = state;
+    if (focusIndex >= 0) {
+      const [wx, wz] = toWorld(WAYPOINTS[focusIndex].cell);
+      const back = sceneStore.pageProgress * 10;
+      if (wide) {
+        wantTarget.set(wx - 12, 4, wz - 1);
+        wantPos.set(wx - 13, 66 + back, wz + 28 + back);
+      } else {
+        wantTarget.set(wx, 4, wz + 16);
+        wantPos.set(wx, 80 + back, wz + 44 + back);
+      }
     } else {
-      const max = BODIES.length - 1;
-      const p = Math.min(Math.max(sceneStore.progress, 0), max);
-      // Reduced motion: cut between stops instead of flying.
-      const i = reduced ? Math.round(p) : Math.floor(p);
-      const f = reduced ? 0 : smooth(p - i);
-      const a = poseFor(i, wide);
-      const b = poseFor(Math.min(i + 1, max), wide);
-      want.pos.lerpVectors(a.pos, b.pos, f);
-      want.target.lerpVectors(a.target, b.target, f);
-      // Lift the camera between stops so it arcs over the grid rather than skimming it.
-      want.pos.y += Math.sin(f * Math.PI) * 6;
+      if (wide) {
+        wantTarget.set(head.x - 19, 0, head.z + 2);
+        wantPos.set(head.x - 20, 112, head.z + 34);
+      } else {
+        wantTarget.set(head.x, 0, head.z + 24);
+        wantPos.set(head.x, 124, head.z + 52);
+      }
+      if (live.overview > 0) {
+        const o = live.overview;
+        const ox = ROUTE_BOUNDS.cx - (wide ? 70 : 0);
+        const oz = ROUTE_BOUNDS.cz + (wide ? 0 : 60);
+        wantTarget.lerp(new THREE.Vector3(ox, 0, oz), o);
+        wantPos.lerp(new THREE.Vector3(ox - 10, wide ? 300 : 460, oz + 210), o);
+      }
     }
 
-    // Gentle parallax from the pointer.
-    if (!reduced && sceneStore.pointer.active) {
-      want.pos.x += sceneStore.pointer.x * 1.2;
-      want.pos.y += sceneStore.pointer.y * 0.6;
-    }
+    // Fog widens for the overview so the whole route stays visible.
+    live.fogNear = THREE.MathUtils.lerp(150, 340, live.overview);
+    live.fogFar = THREE.MathUtils.lerp(400, 950, live.overview);
 
-    if (!current.ready || reduced) {
-      camera.position.copy(want.pos);
-      current.target.copy(want.target);
-      current.ready = true;
+    if (!state.ready || reduced) {
+      cam.position.copy(wantPos);
+      state.target.copy(wantTarget);
+      state.ready = true;
     } else {
-      const k = 1 - Math.exp(-dt * 2.6);
-      camera.position.lerp(want.pos, k);
-      current.target.lerp(want.target, k);
+      const k = 1 - Math.exp(-dt * 3);
+      cam.position.lerp(wantPos, k);
+      state.target.lerp(wantTarget, k);
     }
-    camera.lookAt(current.target);
+    cam.lookAt(state.target);
+
+    // Speed boost: the view widens slightly while you scroll fast.
+    const wantFov = BASE_FOV + live.speed * 9;
+    state.fov += (wantFov - state.fov) * Math.min(1, dt * 5);
+    if (Math.abs(cam.fov - state.fov) > 0.01) {
+      cam.fov = state.fov;
+      cam.updateProjectionMatrix();
+    }
   });
 
   return null;

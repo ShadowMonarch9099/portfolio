@@ -1,8 +1,10 @@
 # Kush Honkalse · Portfolio
 
-A scroll-driven 3D portfolio. As you scroll, the camera travels across a spacetime grid, and each chapter of the
-page is a celestial body whose gravity bends the grid. The cursor bends it too. Each project has its own case-study
-page, where the camera flies in to that project's planet.
+A scroll-driven 3D portfolio built around a holographic mission map of a cyberpunk city. As you scroll, a GPS
+route draws itself along the streets from one waypoint to the next; each chapter of the page is a waypoint, and
+each project's waypoint raises a holographic card with its screenshot. Your cursor is a scanner that lights up the
+buildings beneath it, and the last stop pulls back to show the whole route. Each project has its own case-study
+page, where the camera zooms in on that project's waypoint.
 
 Built with **Next.js 16 (App Router)**, **TypeScript (strict)**, **Tailwind CSS 4**, **React Three Fiber / Three.js**,
 **GSAP** (ScrollTrigger, SplitText) and **Lenis**. Fully static; deploys to Vercel with no backend.
@@ -49,7 +51,8 @@ Each project in `work` becomes a stop on the journey **and** a page at `/work/<s
 - `summary` appears on the home page; `overview`, `built`, `challenge` and `decision` appear on the case-study page.
   Leave out `challenge` or `decision` if a project doesn't have one.
 - `liveUrl` adds a "Visit live site" link. Leave it out to hide the link.
-- `planet` sets the colour and type of the project's body in the 3D scene (`planet`, `ringed` or `blackhole`).
+- `neon` sets the colour of the project's card on the 3D map. `billboard` is the small screenshot the card shows
+  (e.g. `/work/meet/billboard.jpg`, about 960×600); leave it out and the waypoint just shows its label.
 
 ## Adding screenshots and videos
 
@@ -90,11 +93,18 @@ src/
 │   └── icon, apple-icon, opengraph-image, sitemap, robots
 ├── components/
 │   ├── home/                   # One component per chapter (Hero, Origin, Principles, WorkStops, …)
-│   ├── work/                   # Case-study helpers (FocusPlanet, MediaFrame)
+│   ├── work/                   # Case-study helpers (FocusStop, MediaFrame)
 │   ├── scene/                  # WebGL scene
-│   │   ├── world.ts            # Where each body sits, its size, colour and gravity well
-│   │   ├── Grid.tsx            # The spacetime grid (bent on the GPU by every well + the cursor)
-│   │   ├── Bodies.tsx          # Stars, planets, rings, black hole, moons, binary, belt, comet
+│   │   ├── world.ts            # Map layout: waypoints, the GPS route along the streets, blocks, gamer POIs
+│   │   ├── CityMap.tsx         # Holographic wireframe blocks and streets (scanner + radar light the edges)
+│   │   ├── Route.tsx           # The route ribbon (travelled / head / road ahead), radar sweep, head marker
+│   │   ├── Waypoints.tsx       # Waypoint rings, beams, labels, project cards and POI tags
+│   │   ├── Scanner.tsx         # Cursor scanner reticle
+│   │   ├── MapTraffic.tsx      # Minimap traffic dots
+│   │   ├── Rain.tsx            # Light rain over the map
+│   │   ├── canvasText.ts       # Labels and cards drawn with the site fonts
+│   │   ├── live.ts             # Per-frame values shared inside the scene (route head, speed, scanner)
+│   │   ├── palette.ts          # Scene colours for the holographic (dark) and ink (light) themes
 │   │   ├── CameraRig.tsx       # Camera path between stops, and case-study close-ups
 │   │   ├── SceneRoot.tsx       # Loads WebGL lazily, CSS fallback, pointer + theme sync
 │   │   └── store.ts            # Shared numbers between DOM and scene (no React re-renders)
@@ -105,16 +115,20 @@ src/
 └── data/profile.ts             # ← all content
 ```
 
-- **Scroll → camera.** Each home-page section has `data-stop="<id>"` matching a body in `scene/world.ts`. When the
-  centre of the screen passes a section's centre, the camera arrives at that body. To add a chapter, add a body to
-  `BODIES` (in order) and a section with the same `data-stop`, then add its label to `components/chapters.ts`.
+- **Scroll → route.** Each home-page section has `data-stop="<id>"` matching a waypoint in `scene/world.ts`. When
+  the centre of the screen passes a section's centre, the route reaches that waypoint and the camera follows it. To
+  add a chapter, add an entry to `WAYPOINTS` in `world.ts` (in order, with a street intersection `cell`) and a section
+  with the same `data-stop`, then add its label to `components/chapters.ts`. The route between waypoints is generated
+  from a fixed seed, so it is the same on every visit. The gamer tags on the map are the `EGGS` list in the same file.
+- **Effects.** Scrolling fast widens the field of view slightly and makes the route head glow (a speed boost); the
+  camera never moves up and down between stops.
 - **Performance.** The page paints as plain HTML first. On desktop the WebGL scene loads once the browser is idle; on
   phones it loads on the first touch or scroll. GSAP and Lenis also load after first paint. Until the scene arrives,
   a CSS grid floor fills the background, and it stays if WebGL isn't available.
 - **Accessibility.** Semantic landmarks, skip link, visible focus rings, keyboard-operable menu (Esc closes it),
   WCAG AA contrast in both themes. With "reduce motion" on, smooth scrolling and text animations are off, and the
   camera cuts between stops instead of flying.
-- **Themes.** "Space" (dark) and "Paper" (light). Follows the system setting until the visitor picks one, then
+- **Themes.** "Holographic map" (dark) and "Ink on paper" (light). Follows the system setting until the visitor picks one, then
   remembers it. Scene colours live in `scene/palette.ts`, next to the CSS tokens in `globals.css`.
 
 ## Deploy to Vercel

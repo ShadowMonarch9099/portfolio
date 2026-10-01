@@ -1,6 +1,6 @@
 import { work } from "@/data/profile";
 
-/** Labels for every stop on the journey, in the same order as scene/world.ts BODIES. */
+/** Labels for every stop on the journey, in the same order as scene/world.ts WAYPOINTS. */
 export const STOP_LABELS = [
   "Start",
   "Origin",

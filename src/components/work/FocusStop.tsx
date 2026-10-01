@@ -3,8 +3,8 @@
 import { useEffect } from "react";
 import { sceneStore } from "../scene/store";
 
-/** Points the camera at this case study's planet and eases it back as you read. */
-export function FocusPlanet({ slug }: { slug: string }) {
+/** Points the camera at this case study's waypoint on the map and eases it back as you read. */
+export function FocusStop({ slug }: { slug: string }) {
   useEffect(() => {
     sceneStore.focus = slug;
     const onScroll = () => {

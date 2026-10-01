@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { getCaseStudy, work } from "@/data/profile";
-import { FocusPlanet } from "@/components/work/FocusPlanet";
+import { FocusStop } from "@/components/work/FocusStop";
 import { MediaFrame } from "@/components/work/MediaFrame";
 import { Motion } from "@/components/Lazy";
 
@@ -175,7 +175,7 @@ export default async function CaseStudyPage({ params }: { params: Promise<{ slug
           </Link>
         </article>
       </main>
-      <FocusPlanet slug={study.slug} />
+      <FocusStop slug={study.slug} />
       <Motion />
     </>
   );

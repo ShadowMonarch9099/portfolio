@@ -85,6 +85,7 @@ export function SceneRoot() {
 
   return (
     <div aria-hidden="true" className="pointer-events-none fixed inset-0 -z-10 overflow-hidden">
+      <div className="city-sky absolute inset-0" />
       <div
         className={`absolute inset-0 transition-opacity duration-[1600ms] ${ready ? "opacity-0" : "opacity-100"}`}
       >

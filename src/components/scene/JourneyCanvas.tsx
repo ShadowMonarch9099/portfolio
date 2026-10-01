@@ -3,9 +3,13 @@
 import { useEffect, useState } from "react";
 import { Canvas, useThree } from "@react-three/fiber";
 import { sceneStore } from "./store";
-import { Grid } from "./Grid";
-import { Bodies } from "./Bodies";
-import { Stars } from "./Stars";
+import { CityMap } from "./CityMap";
+import { Route } from "./Route";
+import { Waypoints } from "./Waypoints";
+import { MapTraffic } from "./MapTraffic";
+import { StreetNames } from "./StreetNames";
+import { Scanner } from "./Scanner";
+import { Rain } from "./Rain";
 import { CameraRig } from "./CameraRig";
 
 /** Lets DOM code request a redraw when the canvas renders on demand (reduced motion). */
@@ -30,7 +34,7 @@ export default function JourneyCanvas({ onReady }: { onReady: () => void }) {
     <Canvas
       dpr={[1, lite ? 1.25 : 1.75]}
       gl={{ antialias: true, alpha: true, powerPreference: "high-performance" }}
-      camera={{ fov: 42, near: 0.1, far: 420, position: [0, 20, 30] }}
+      camera={{ fov: 42, near: 1, far: 1200, position: [0, 60, 40] }}
       frameloop={reduced ? "demand" : "always"}
       onCreated={() => requestAnimationFrame(onReady)}
       aria-hidden="true"
@@ -38,9 +42,13 @@ export default function JourneyCanvas({ onReady }: { onReady: () => void }) {
     >
       <InvalidateBridge />
       <CameraRig />
-      <Grid lite={lite} />
-      <Stars lite={lite} />
-      <Bodies lite={lite} />
+      <CityMap lite={lite} />
+      <StreetNames />
+      <MapTraffic lite={lite} />
+      <Route />
+      <Waypoints />
+      <Scanner />
+      <Rain lite={lite} />
     </Canvas>
   );
 }
