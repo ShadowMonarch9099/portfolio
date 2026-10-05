@@ -65,6 +65,7 @@ const fragmentShader = /* glsl */ `
   uniform vec3 uHead;
   uniform vec3 uAhead;
   uniform float uFar;
+  uniform float uFade;
   varying float vDist;
   varying float vSide;
   varying float vView;
@@ -79,7 +80,7 @@ const fragmentShader = /* glsl */ `
     // The road ahead: a faint dashed line that fades into the distance.
     float ahead = (1.0 - done) * step(0.5, fract(vDist * 0.22)) * (1.0 - smoothstep(0.0, 160.0, vDist - uProgress));
     if (uGlow < 0.5) { a += ahead * 0.32; col = mix(col, uAhead, 1.0 - done); }
-    a *= edge * (1.0 - smoothstep(uFar * 0.85, uFar * 1.3, vView));
+    a *= uFade * edge * (1.0 - smoothstep(uFar * 0.85, uFar * 1.3, vView));
     if (a < 0.003) discard;
     gl_FragColor = vec4(col, a);
   }
@@ -122,12 +123,15 @@ function getGlowTexture() {
 export function Route() {
   const core = useMemo(() => ribbon(0.9, 0.06), []);
   const glow = useMemo(() => ribbon(4, 0.04), []);
-  const makeMat = (isGlow: boolean) =>
+  // A thicker copy drawn over the buildings, so the whole route reads in the end-of-journey overview.
+  const wide = useMemo(() => ribbon(5, 0.08), []);
+  const makeMat = (isGlow: boolean, overlay = false) =>
     new THREE.ShaderMaterial({
       vertexShader,
       fragmentShader,
       transparent: true,
       depthWrite: false,
+      depthTest: !overlay,
       side: THREE.DoubleSide,
       uniforms: {
         uProgress: { value: 0 },
@@ -137,10 +141,12 @@ export function Route() {
         uHead: { value: new THREE.Color() },
         uAhead: { value: new THREE.Color() },
         uFar: { value: 280 },
+        uFade: { value: 1 },
       },
     });
   const coreMat = useMemo(() => makeMat(false), []);
   const glowMat = useMemo(() => makeMat(true), []);
+  const overlayMat = useMemo(() => makeMat(false, true), []);
 
   const radarMat = useMemo(
     () =>
@@ -161,7 +167,7 @@ export function Route() {
 
   useFrame(({ clock }) => {
     const p = palette(sceneStore.isDark);
-    for (const m of [coreMat, glowMat]) {
+    for (const m of [coreMat, glowMat, overlayMat]) {
       const u = m.uniforms;
       u.uProgress.value = live.headDist;
       u.uBoost.value = live.speed;
@@ -175,6 +181,7 @@ export function Route() {
         m.needsUpdate = true;
       }
     }
+    overlayMat.uniforms.uFade.value = live.overview;
     const t = sceneStore.reducedMotion ? 0 : clock.elapsedTime;
     radarMat.uniforms.uColor.value.set(p.done);
     radarMat.uniforms.uAngle.value = (t * 0.9) % (Math.PI * 2);
@@ -196,6 +203,7 @@ export function Route() {
       </mesh>
       <mesh geometry={glow} material={glowMat} renderOrder={2} frustumCulled={false} />
       <mesh geometry={core} material={coreMat} renderOrder={3} frustumCulled={false} />
+      <mesh geometry={wide} material={overlayMat} renderOrder={18} frustumCulled={false} />
       <sprite ref={head} renderOrder={19}>
         <spriteMaterial ref={headMat} map={texture} transparent depthWrite={false} depthTest={false} />
       </sprite>

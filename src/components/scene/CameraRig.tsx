@@ -8,7 +8,8 @@ import { live } from "./live";
 import { ROUTE, ROUTE_BOUNDS, WAYPOINTS, routeAt, toWorld } from "./world";
 
 const BASE_FOV = 42;
-const smooth = (t: number) => t * t * (3 - 2 * t);
+// Mostly linear, eased a little at each stop, so the route keeps moving while you read.
+const ease = (t: number) => t + (t * t * (3 - 2 * t) - t) * 0.4;
 
 /**
  * Bird's-eye camera that follows the head of the GPS route.
@@ -44,7 +45,7 @@ export function CameraRig() {
     if (reduced) dist = ROUTE.stopDist[Math.round(progress)];
     else {
       const i = Math.floor(progress);
-      const f = smooth(progress - i);
+      const f = ease(progress - i);
       dist = THREE.MathUtils.lerp(ROUTE.stopDist[i], ROUTE.stopDist[Math.min(i + 1, max)], f);
     }
 
@@ -85,16 +86,17 @@ export function CameraRig() {
       }
       if (live.overview > 0) {
         const o = live.overview;
-        const ox = ROUTE_BOUNDS.cx - (wide ? 70 : 0);
+        // Wide screens: shift the map right, clear of the text column.
+        const ox = ROUTE_BOUNDS.cx - (wide ? Math.min(320, (size.width / size.height) * 200) : 0);
         const oz = ROUTE_BOUNDS.cz + (wide ? 0 : 60);
         wantTarget.lerp(new THREE.Vector3(ox, 0, oz), o);
-        wantPos.lerp(new THREE.Vector3(ox - 10, wide ? 300 : 460, oz + 210), o);
+        wantPos.lerp(new THREE.Vector3(ox - 10, wide ? 1000 : 1150, oz + 150), o);
       }
     }
 
     // Fog widens for the overview so the whole route stays visible.
-    live.fogNear = THREE.MathUtils.lerp(150, 340, live.overview);
-    live.fogFar = THREE.MathUtils.lerp(400, 950, live.overview);
+    live.fogNear = THREE.MathUtils.lerp(150, 950, live.overview);
+    live.fogFar = THREE.MathUtils.lerp(400, 1800, live.overview);
 
     if (!state.ready || reduced) {
       cam.position.copy(wantPos);

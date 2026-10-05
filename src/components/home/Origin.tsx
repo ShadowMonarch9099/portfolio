@@ -31,8 +31,8 @@ export function Origin() {
         </figure>
 
         <div className="space-y-5 text-lg leading-relaxed text-muted">
-          {origin.body.map((p) => (
-            <p key={p} data-reveal className="text-pretty">
+          {origin.body.map((p, i) => (
+            <p key={p} data-reveal className={`text-pretty ${i === 0 ? "text-fg" : ""}`}>
               {p}
             </p>
           ))}
@@ -47,6 +47,26 @@ export function Origin() {
           </div>
         ))}
       </dl>
+
+      <h3 data-reveal className="pixel mt-14 flex items-center justify-between text-muted">
+        <span>The run so far</span>
+        <span className="text-signal">Save file</span>
+      </h3>
+      <ol className="relative mt-6 space-y-5 border-l border-line pl-6">
+        {origin.timeline.map((t, i) => {
+          const last = i === origin.timeline.length - 1;
+          return (
+            <li key={t.when} data-reveal className="relative">
+              <span
+                aria-hidden="true"
+                className={`absolute -left-[1.85rem] top-1.5 size-2.5 ${last ? "border border-accent bg-bg" : "bg-accent"}`}
+              />
+              <p className="pixel text-[0.65rem] text-accent">{t.when}</p>
+              <p className={`mt-1 leading-relaxed text-pretty ${last ? "text-muted italic" : ""}`}>{t.what}</p>
+            </li>
+          );
+        })}
+      </ol>
     </Stop>
   );
 }

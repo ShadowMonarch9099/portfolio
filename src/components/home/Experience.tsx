@@ -8,6 +8,9 @@ export function Experience() {
       <h2 data-split className="display text-[clamp(2.2rem,4.6vw,4.2rem)] font-bold">
         Six months in <span className="text-accent">production.</span>
       </h2>
+      <p data-reveal className="mt-5 max-w-lg text-lg leading-relaxed text-muted text-pretty">
+        {profile.experienceIntro}
+      </p>
 
       <ol className="mt-10 space-y-4">
         {profile.experience.map((e, i) => (
@@ -21,6 +24,16 @@ export function Experience() {
               {e.role} <span className="not-italic text-muted">· {e.place}</span>
             </p>
             <p className="mt-3 max-w-lg leading-relaxed text-muted text-pretty">{e.summary}</p>
+            <ul className="mt-4 space-y-2 border-t border-line pt-4">
+              {e.points.map((pt) => (
+                <li key={pt} className="grid grid-cols-[1.25rem_1fr] leading-relaxed text-pretty">
+                  <span aria-hidden="true" className="pixel pt-1 text-[0.6rem] text-accent">
+                    ▸
+                  </span>
+                  {pt}
+                </li>
+              ))}
+            </ul>
           </li>
         ))}
       </ol>

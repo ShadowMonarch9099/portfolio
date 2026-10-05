@@ -25,7 +25,7 @@ export const roadWidth = (i: number) => (isAvenue(i) ? 4.6 : 2.6);
 export const SIDEWALK = 0.9;
 
 /** Map extent, in blocks. */
-export const MAP = { minX: -10, maxX: 17, minZ: -42, maxZ: 8 };
+export const MAP = { minX: -10, maxX: 17, minZ: -60, maxZ: 8 };
 
 export interface Waypoint {
   id: string;
@@ -40,7 +40,7 @@ export interface Waypoint {
 const projects: Waypoint[] = work.map((w, i) => ({
   id: w.slug,
   label: `MISSION 0${i + 1} · ${w.title.toUpperCase()}`,
-  cell: [[6, -9], [3, -13], [8, -16], [2, -19]][i % 4] as [number, number],
+  cell: [[7, -15], [2, -20], [8, -25], [2, -30]][i % 4] as [number, number],
   image: w.billboard,
   color: w.neon,
 }));
@@ -48,13 +48,13 @@ const projects: Waypoint[] = work.map((w, i) => ({
 /** One waypoint per home-page stop, in scroll order. */
 export const WAYPOINTS: Waypoint[] = [
   { id: "hero", label: "START · KUSH", cell: [2, 0], color: NEON.orange },
-  { id: "origin", label: "LVL 01 · ORIGIN", cell: [5, -3], color: NEON.teal },
-  { id: "values", label: "LVL 02 · PRINCIPLES", cell: [1, -6], color: NEON.teal },
+  { id: "origin", label: "LVL 01 · ORIGIN", cell: [6, -5], color: NEON.teal },
+  { id: "values", label: "LVL 02 · PRINCIPLES", cell: [1, -10], color: NEON.teal },
   ...projects,
-  { id: "experience", label: "LVL 04 · QUEST LOG", cell: [6, -22], color: NEON.yellow },
-  { id: "loadout", label: "LVL 05 · LOADOUT", cell: [0, -25], color: NEON.teal },
-  { id: "offclock", label: "LVL 06 · OFF THE CLOCK", cell: [5, -28], color: NEON.pink },
-  { id: "contact", label: "LVL 07 · PRESS START", cell: [2, -32], color: NEON.orange },
+  { id: "experience", label: "LVL 04 · QUEST LOG", cell: [7, -35], color: NEON.yellow },
+  { id: "loadout", label: "LVL 05 · LOADOUT", cell: [0, -40], color: NEON.teal },
+  { id: "offclock", label: "LVL 06 · OFF THE CLOCK", cell: [6, -45], color: NEON.pink },
+  { id: "contact", label: "LVL 07 · PRESS START", cell: [2, -50], color: NEON.orange },
 ];
 
 /** Home-page stops, in scroll order. Each maps to a waypoint above and a DOM section. */
@@ -229,7 +229,7 @@ export const STREET_LABELS: StreetLabel[] = (() => {
   for (let ix = MAP.minX; ix <= MAP.maxX; ix++) {
     if (!isAvenue(ix)) continue;
     const text = AVENUES_NS[ns++ % AVENUES_NS.length];
-    for (let k = 0; k < 4; k++) out.push({ text, position: [ix * BLOCK, 0.05, (-3.5 - k * 9) * BLOCK], rotationY: Math.PI / 2 });
+    for (let k = 0; k < 6; k++) out.push({ text, position: [ix * BLOCK, 0.05, (-3.5 - k * 9) * BLOCK], rotationY: Math.PI / 2 });
   }
   let ew = 0;
   for (let iz = MAP.maxZ; iz >= MAP.minZ; iz--) {
@@ -245,7 +245,7 @@ const EGGS = ["ARCADE", "GG", "RESPAWN", "1UP", "60 FPS", "NO LAG", "HIGH SCORE"
 export const POIS = EGGS.map((label, i) => {
   const random = seededRandom(900 + i);
   const cx = -3 + Math.floor(random() * 14);
-  const cz = -2 - i * 2.4 - Math.floor(random() * 2);
+  const cz = -2 - i * 3.6 - Math.floor(random() * 2);
   return {
     label,
     position: [cx * BLOCK + BLOCK / 2, 0, cz * BLOCK + BLOCK / 2] as [number, number, number],

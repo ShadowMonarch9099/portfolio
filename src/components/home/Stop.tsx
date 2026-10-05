@@ -22,14 +22,14 @@ export function Stop({ stop, id, label, level, children, className = "" }: StopP
       id={id ?? stop}
       data-stop={stop}
       aria-label={label}
-      className={`relative flex min-h-svh items-center py-28 sm:py-32 ${className}`}
+      className={`relative flex items-start pb-16 pt-24 sm:pb-20 sm:pt-28 ${className}`}
     >
       <div className="mx-auto w-full max-w-[1440px] px-5 sm:px-8 lg:px-12">
         <div className="relative max-w-[42rem] lg:w-[50%]">
           {level && (
             <span
               aria-hidden="true"
-              className="display outline-text pointer-events-none absolute -left-1 -top-32 -z-10 select-none text-[7rem] font-extrabold leading-none sm:-top-44 sm:text-[11rem]"
+              className="display outline-text pointer-events-none absolute -top-8 right-0 -z-10 select-none text-[6rem] font-extrabold leading-none sm:-top-12 sm:text-[9rem]"
             >
               {level}
             </span>

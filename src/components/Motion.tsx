@@ -52,6 +52,29 @@ export default function Motion() {
         });
       });
 
+      // Transit lines light up word by word as they scroll through the screen.
+      gsap.utils.toArray<HTMLElement>("[data-words]").forEach((el) => {
+        ScrollTrigger.create({
+          trigger: el,
+          start: "top bottom",
+          once: true,
+          onEnter: () => {
+            const split = SplitText.create(el, { type: "words", wordsClass: "word-lit" });
+            splits.push(split);
+            gsap.fromTo(
+              split.words,
+              { "--lit": 0 },
+              {
+                "--lit": 1,
+                ease: "none",
+                stagger: 0.1,
+                scrollTrigger: { trigger: el, start: "top 85%", end: "bottom 40%", scrub: true },
+              },
+            );
+          },
+        });
+      });
+
       gsap.utils.toArray<HTMLElement>("[data-scramble]").forEach((el) => {
         const text = el.textContent ?? "";
         ScrollTrigger.create({
@@ -67,8 +90,17 @@ export default function Motion() {
       ScrollTrigger.batch("[data-reveal]", {
         start: "top 90%",
         once: true,
+        // After a jump (e.g. from the level select) many elements enter at once; cap
+        // the total stagger so the ones on screen don't wait behind the ones passed.
         onEnter: (batch) =>
-          gsap.to(batch, { autoAlpha: 1, y: 0, duration: 1, ease: "expo.out", stagger: 0.08, overwrite: true }),
+          gsap.to(batch, {
+            autoAlpha: 1,
+            y: 0,
+            duration: 1,
+            ease: "expo.out",
+            stagger: batch.length > 5 ? { amount: 0.4 } : 0.08,
+            overwrite: true,
+          }),
       });
 
       gsap.utils.toArray<HTMLElement>("[data-scrub]").forEach((el) => {

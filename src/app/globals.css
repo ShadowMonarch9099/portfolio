@@ -305,6 +305,22 @@ html.lenis body {
   transform: scaleX(var(--lit));
 }
 
+/* Transit lines: each word lights up as you scroll past (see Motion.tsx). */
+.word-lit {
+  --lit: 1;
+  color: color-mix(in srgb, var(--fg) calc(var(--lit) * 100%), var(--muted));
+}
+
+/* Dashed route line running between stops. */
+.trail {
+  width: 2px;
+  margin-left: 3px;
+  background-image: linear-gradient(to bottom, var(--accent) 50%, transparent 0);
+  background-size: 2px 10px;
+  opacity: 0.55;
+  mask-image: linear-gradient(to bottom, transparent, #000 30%, #000 70%, transparent);
+}
+
 /* Underline that draws in on hover */
 .link-draw {
   background-image: linear-gradient(currentColor, currentColor);

@@ -12,7 +12,7 @@ export function Loadout() {
         Main build: <span className="text-accent">frontend.</span>
       </h2>
       <p data-reveal className="mt-5 max-w-lg text-lg leading-relaxed text-muted text-pretty">
-        The tools I reach for. Frontend is where I spend most of my time; the rest is there when the job needs it.
+        {profile.loadoutIntro}
       </p>
 
       {primary && (
@@ -41,6 +41,7 @@ export function Loadout() {
           <div key={g.name}>
             <dt className="pixel text-[0.65rem] text-muted">{g.name}</dt>
             <dd className="mt-2 leading-relaxed">{g.skills.join(" · ")}</dd>
+            {g.note && <dd className="mt-1 text-sm italic text-muted">{g.note}</dd>}
           </div>
         ))}
       </dl>

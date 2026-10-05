@@ -42,6 +42,7 @@ function WaypointMarker({ wp, index, fonts }: { wp: Waypoint; index: number; fon
   const [x, z] = toWorld(wp.cell);
   const group = useRef<THREE.Group>(null);
   const pulse = useRef<THREE.Mesh>(null);
+  const ring = useRef<THREE.Mesh>(null);
   const diamond = useRef<THREE.Mesh>(null);
   const labelSprite = useRef<THREE.Sprite>(null);
   const cardSprite = useRef<THREE.Sprite>(null);
@@ -126,6 +127,7 @@ function WaypointMarker({ wp, index, fonts }: { wp: Waypoint; index: number; fon
       mats.pulse.color.set(color);
       mats.pulse.opacity = isCurrent ? (1 - k) * 0.8 : 0;
     }
+    ring.current?.scale.setScalar(1 + live.overview * 3);
     if (diamond.current) {
       diamond.current.rotation.y = t * 0.9 + index;
       diamond.current.position.y = 4.6 + Math.sin(t * 1.4 + index) * 0.3;
@@ -136,11 +138,13 @@ function WaypointMarker({ wp, index, fonts }: { wp: Waypoint; index: number; fon
     const near = isCurrent ? 1 : 1 - THREE.MathUtils.smoothstep(far, 25, 70) + live.overview;
     const dim = portrait ? 0.3 : 1;
     if (labelSprite.current) {
-      const h = isCurrent ? 3.8 : 2.9;
+      // Labels grow as the camera pulls back for the overview, so they stay readable.
+      const h = (isCurrent ? 3.8 : 2.9) * (1 + live.overview * 3.4);
       labelSprite.current.scale.set(h * aspect.current, h, 1);
       // A project shows its card instead of the label while you are at it.
       const hideForCard = wp.image ? cardOpacity.current : 0;
-      mats.label.opacity = Math.min(1, near) * (isCurrent ? 1 : visited ? 0.75 : 0.55) * (1 - hideForCard) * dim;
+      const state = THREE.MathUtils.lerp(isCurrent ? 1 : visited ? 0.75 : 0.55, 1, live.overview);
+      mats.label.opacity = Math.min(1, near) * state * (1 - hideForCard) * dim;
     }
 
     // Project screenshot card rises when you reach its waypoint.
@@ -155,7 +159,7 @@ function WaypointMarker({ wp, index, fonts }: { wp: Waypoint; index: number; fon
 
   return (
     <group ref={group} position={[x, 0, z]}>
-      <mesh geometry={ringGeo} material={mats.ring} rotation={[-Math.PI / 2, 0, 0]} position-y={0.08} renderOrder={5} />
+      <mesh ref={ring} geometry={ringGeo} material={mats.ring} rotation={[-Math.PI / 2, 0, 0]} position-y={0.08} renderOrder={5} />
       <mesh ref={pulse} geometry={pulseGeo} material={mats.pulse} rotation={[-Math.PI / 2, 0, 0]} position-y={0.08} renderOrder={5} />
       <mesh geometry={beamGeo} material={mats.beam} position-y={13} renderOrder={5} />
       <mesh ref={diamond} geometry={diamondGeo} material={mats.diamond} position-y={4.6} />

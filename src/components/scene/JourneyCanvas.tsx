@@ -34,7 +34,7 @@ export default function JourneyCanvas({ onReady }: { onReady: () => void }) {
     <Canvas
       dpr={[1, lite ? 1.25 : 1.75]}
       gl={{ antialias: true, alpha: true, powerPreference: "high-performance" }}
-      camera={{ fov: 42, near: 1, far: 1200, position: [0, 60, 40] }}
+      camera={{ fov: 42, near: 1, far: 2100, position: [0, 60, 40] }}
       frameloop={reduced ? "demand" : "always"}
       onCreated={() => requestAnimationFrame(onReady)}
       aria-hidden="true"

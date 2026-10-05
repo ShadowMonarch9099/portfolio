@@ -4,7 +4,7 @@ import { Stop } from "./Stop";
 export function Hero() {
   const { hero, player } = profile;
   return (
-    <Stop stop="hero" id="top" label="Introduction" className="!items-end pb-24 sm:!items-center">
+    <Stop stop="hero" id="top" label="Introduction" className="min-h-svh !items-end pb-24 sm:!items-center">
       <p className="pixel mb-7 flex items-center gap-2 text-muted">
         <span className="text-accent">▶</span> Player 1 <span aria-hidden="true">·</span> {profile.location}
       </p>
@@ -21,6 +21,12 @@ export function Hero() {
       </h1>
 
       <p className="mt-6 max-w-[34rem] text-lg leading-relaxed text-muted text-pretty">{hero.intro}</p>
+      <p className="mt-3 flex max-w-[34rem] gap-2.5 leading-relaxed text-pretty">
+        <span aria-hidden="true" className="pixel pt-1 text-[0.7rem] text-signal">
+          ◆
+        </span>
+        {hero.guide}
+      </p>
 
       <div data-reveal className="mt-7 flex flex-wrap items-center gap-4">
         <a href="#origin" data-magnetic className="btn">

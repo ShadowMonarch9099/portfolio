@@ -23,7 +23,18 @@ export function Closing() {
         {closing.body}
       </p>
 
-      <ul data-reveal className="mt-10 border-t border-line">
+      <h3 data-reveal className="pixel mt-10 text-muted">What you get with Player 1</h3>
+      <ul className="mt-4 grid gap-2.5 sm:grid-cols-2">
+        {closing.offer.map((o, i) => (
+          <li key={o.title} data-reveal className="panel p-4">
+            <p className="pixel text-[0.6rem] text-accent">Perk {String(i + 1).padStart(2, "0")}</p>
+            <p className="display mt-1 text-lg font-bold">{o.title}</p>
+            <p className="mt-1 text-sm leading-relaxed text-muted text-pretty">{o.body}</p>
+          </li>
+        ))}
+      </ul>
+
+      <ul data-reveal className="mt-12 border-t border-line">
         <li className="border-b border-line">
           <CopyEmail email={contact.email} />
         </li>

@@ -28,6 +28,10 @@ export interface CaseStudy {
   liveUrl?: string;
   /** Short intro shown on the home page. */
   summary: string;
+  /** "My part": three short points shown on the home page. */
+  highlights: string[];
+  /** One line on what the project taught me. */
+  takeaway: string;
   /** Case-study sections. Omit any that don't apply. */
   overview: string[];
   built: { heading: string; points: string[] };
@@ -48,6 +52,8 @@ export interface SkillGroup {
   name: string;
   skills: string[];
   primary?: boolean;
+  /** One line on where I've used this group. */
+  note?: string;
 }
 
 /* ------------------------------------------------------------------ */
@@ -80,7 +86,9 @@ export const profile = {
     middle: "people actually",
     emphasis: "see.",
     intro:
-      "Frontend developer from Pune. I care about three things: that it's fast, that it's easy to use, and that it looks right. Final-year AI & Data Science student, graduating May 2027.",
+      "Frontend developer from Pune and final-year AI & Data Science student, graduating May 2027. I care about three things: that it's fast, that it's easy to use, and that it looks right.",
+    /** Explains the map in the background. */
+    guide: "This page is a map of how I got here. Scroll, and the route follows the story one stop at a time.",
   },
 
   /** The "player card" in the hero. `build` is how my focus splits between frontend and backend. */
@@ -94,22 +102,49 @@ export const profile = {
     ],
   },
 
+  /**
+   * Bridges shown between stops, as a game dialogue box, so each section
+   * leads into the next one. Keyed by the stop they lead into (see scene/world.ts).
+   */
+  transitions: {
+    origin: "Every player has an origin story. Mine starts later than most.",
+    values: "Building things taught me quickly that working isn't the same as finished.",
+    meet: "Principles are easy to write down. These projects are where I had to live up to them.",
+    thinkforge: "Meet taught me how a whole product holds together. ThinkForge is where one of my own ideas ended up at the centre of one.",
+    kalasetu: "Both of those were built for people sitting at a screen. The next one is for people who may never type a word.",
+    "space-time-lab": "Not everything I build starts with a brief. Sometimes it starts with something I can't picture.",
+    experience: "Two of those were built in the same six months, at the same company.",
+    loadout: "Six months of shipping also settles which tools you reach for first.",
+    offclock: "That's the work. Here's what fills the rest of the day.",
+    contact: "That's the run so far. The next level needs a second player.",
+  } as Record<string, string>,
+
   origin: {
     title: "I didn't write a single line of code until my first year of college.",
     body: [
-      "Programming reached me through the curriculum, and through my friends. Watching the people around me build things made me want to build things too, and that curiosity opened up a whole new world.",
-      "I lean towards the frontend because I want to make things people can see, use and react to, not work that stays in the shadows. I do backend work too, and I'm comfortable there, but the interface is where I want to be.",
+      "No early head start. Programming reached me in my first year of engineering, through the curriculum and through my friends. Watching them build things made me want to build things too.",
+      "I lean towards the frontend because I want to make the things people see, use and react to. I'm comfortable on the backend, but the interface is where I want to be.",
     ],
     facts: [
       { label: "Studying", value: "B.E. AI & Data Science, MMCOE" },
       { label: "Graduating", value: "May 2027 · CGPA 8.3" },
       { label: "Based in", value: "Pune, India" },
     ],
+    /** "The run so far": milestones, oldest first. */
+    timeline: [
+      { when: "2023", what: "First year of engineering. First line of code." },
+      { when: "2025", what: "Third year. Became Technical Head of AESA MMCOE." },
+      { when: "Jan 2026", what: "Joined ArrayPointer as a software engineering intern. Built ThinkForge." },
+      { when: "Mar 2026", what: "Built the Space-Time Lab for Toycathon 2026. It went on to reach Stage 3." },
+      { when: "Apr 2026", what: "Started on Meet, which went live in production." },
+      { when: "Sep 2026", what: "Started KalaSetu for Smart India Hackathon 2026." },
+      { when: "May 2027", what: "Graduation. Next level: loading." },
+    ],
   },
 
   values: {
     title: "Smooth sailing, every time.",
-    intro: "Three things decide whether something I build is done.",
+    intro: "Three things decide whether something I build is done. If one is missing, it isn't finished yet.",
     items: [
       { name: "Performance", body: "If it stutters, it isn't finished. Pages should load fast and every interaction should feel instant." },
       { name: "Ease of use", body: "Nobody should need instructions. The interface should make sense the first time you see it." },
@@ -121,6 +156,9 @@ export const profile = {
     },
   },
 
+  experienceIntro:
+    "Working with people from the industry is clearly different from working on your own projects or in college. It's a different environment, with a different vibe.",
+
   experience: [
     {
       org: "ArrayPointer",
@@ -128,16 +166,27 @@ export const profile = {
       period: "Jan 2026 – Jul 2026",
       place: "Pune",
       summary:
-        "Six months building two products end to end: Meet, a multi-tenant meeting intelligence SaaS, and ThinkForge, an adaptive learning app. Mostly frontend, with a solid share of backend.",
+        "Six months building two products end to end with a team: an adaptive learning app and a multi-tenant meeting intelligence SaaS. Mostly frontend, with a solid share of backend.",
+      points: [
+        "ThinkForge (Jan – Mar): built the Next.js app and its API, and proposed the level-detection system that became the core of the product.",
+        "Meet (Apr – Jul): built the React frontend and the in-browser recorder, wrote a large part of the Node.js backend, and helped deploy it with Docker and Nginx.",
+        "Spent a lot of my time on integration: merging, debugging and making everyone's pieces run as one product.",
+      ],
     },
     {
       org: "MMCOE, Savitribai Phule Pune University",
       role: "B.E., Artificial Intelligence & Data Science",
       period: "Graduating May 2027",
       place: "Pune",
-      summary: "CGPA 8.3 / 10. Technical Head of AESA MMCOE.",
+      summary: "CGPA 8.3 / 10.",
+      points: [
+        "Technical Head of AESA MMCOE in third year: ran the department's technical events and mentored juniors on their projects.",
+        "Stage 3 of Toycathon 2026 with the Space-Time Lab.",
+      ],
     },
   ],
+
+  loadoutIntro: "Frontend is my main build. The rest is there when the job needs it.",
 
   skills: [
     {
@@ -148,34 +197,64 @@ export const profile = {
         "Vite", "GSAP", "Three.js", "React Three Fiber", "HTML5", "CSS3", "Responsive design",
       ],
     },
-    { name: "Backend", skills: ["Node.js", "Express.js", "FastAPI", "REST API design", "Next.js API routes", "Zod", "Vitest"] },
-    { name: "Mobile", skills: ["Flutter", "React Native (Expo)"] },
-    { name: "Data", skills: ["PostgreSQL", "MySQL", "MongoDB", "Supabase"] },
+    {
+      name: "Backend",
+      note: "25+ REST APIs for Meet.",
+      skills: ["Node.js", "Express.js", "FastAPI", "REST API design", "Next.js API routes", "Zod", "Vitest"],
+    },
+    { name: "Mobile", note: "Flutter for KalaSetu.", skills: ["Flutter", "React Native (Expo)"] },
+    { name: "Data", note: "PostgreSQL in production on Meet.", skills: ["PostgreSQL", "MySQL", "MongoDB", "Supabase"] },
     { name: "Languages", skills: ["TypeScript", "JavaScript", "Python", "Dart", "C++", "SQL"] },
     { name: "Tools", skills: ["Git", "GitHub", "GitLab", "Vercel", "Postman"] },
-    { name: "AI / ML", skills: ["LLM integration (Claude, Gemini)", "Computer vision", "HuggingFace"] },
+    {
+      name: "AI / ML",
+      note: "Claude in ThinkForge, Gemini in KalaSetu.",
+      skills: ["LLM integration (Claude, Gemini)", "Computer vision", "HuggingFace"],
+    },
   ] satisfies SkillGroup[],
 
   offClock: {
     title: "When I'm not coding, I'm probably gaming.",
-    body: [
-      "Gaming is my biggest passion outside of code. I've played a lot of games over the years, and I'm confident in my skills.",
-      "Anime is part of my daily routine, and the rest of the time I'm usually hanging out with friends.",
+    body: "Gaming is my biggest passion outside of code. I've played a lot of games over the years, and I'm confident in my skills. It's also where I learned what a good interface feels like.",
+    /** Shown as a stat sheet. */
+    stats: [
+      { label: "Main quest", value: "Gaming" },
+      { label: "Every day", value: "Anime" },
+      { label: "Party", value: "Friends" },
+    ],
+    /** Spoken languages. `can` lists what's unlocked out of speak, read and write. */
+    languages: [
+      { name: "English", can: ["Speak", "Read", "Write"] },
+      { name: "Hindi", can: ["Speak", "Read", "Write"] },
+      { name: "Marathi", can: ["Speak", "Read", "Write"] },
+      {
+        name: "Japanese",
+        can: ["Speak"],
+        note: "Unlocked by watching a lot of anime. No courses, grammar not guaranteed, and I can't read or write it.",
+      },
     ],
   },
 
   achievements: [
     { title: "Toycathon 2026", detail: "Qualified for Stage 3 of the national-level hackathon with the Space-Time Lab." },
-    { title: "Smart India Hackathon", detail: "Participated in 2024, 2025 and 2026." },
-    { title: "Technical Head, AESA MMCOE", detail: "Ran department technical events and mentored juniors on their projects." },
+    { title: "Shipped to production", detail: "Meet went live in production during my internship." },
+    { title: "Technical Head, AESA MMCOE", detail: "Ran the department's technical events and mentored juniors on their projects." },
+    { title: "Smart India Hackathon", detail: "Took part three years running: 2024, 2025 and 2026." },
     { title: "Full-Stack Web Development", detail: "Completed the Udemy bootcamp certification." },
   ],
 
-  now: "Right now I'm exploring machine learning. It's at the heart of my final-year project, and it's everywhere right now, so I want to understand it properly.",
+  now: "Right now I'm exploring machine learning. It's everywhere, so I want to understand how it works, not just call an API.",
 
   closing: {
     title: "Let's build something people notice.",
-    body: "I'm open to frontend roles and internships, and to anything where I get to build the part people see.",
+    body: "I'm open to full-time roles, internships and freelance projects. Frontend is where I do my best work, and I'm happy to handle the backend around it.",
+    /** What a team gets. */
+    offer: [
+      { title: "Frontend first", body: "React, Next.js and TypeScript, with performance, ease of use and design treated as requirements." },
+      { title: "Full stack when needed", body: "APIs, databases and deployment, done in production, not only in tutorials." },
+      { title: "The one who makes it fit", body: "I'm used to taking everyone's branches and making them run as one product." },
+      { title: "Best on what I care about", body: "Give me something I'm interested in and I'll go deep on it." },
+    ],
   },
 };
 
@@ -196,6 +275,12 @@ export const work: CaseStudy[] = [
     liveUrl: "https://meet.arraypointer.com",
     summary:
       "A multi-tenant meeting intelligence SaaS. I built the React frontend and the in-browser recorder, plus a large part of the Node.js backend.",
+    highlights: [
+      "Built the React frontend: organisation dashboards, session history, shared analysis and invites.",
+      "Built the in-browser recorder, which streams audio in chunks so pausing and resuming never loses data.",
+      "Wrote 25+ REST APIs on a multi-tenant PostgreSQL backend, and helped ship it with Docker and Nginx.",
+    ],
+    takeaway: "Integration is the real work. Getting several people's code to run as one product taught me more than any single feature.",
     overview: [
       "Meet lets a team record meetings straight from the browser and get back AI-generated transcripts, summaries and action items. Each organisation gets its own space, with dashboards, session history and shareable analysis.",
       "I worked across the product, with most of my time on the frontend: the interface people use every day and the recorder that has to work every single time.",
@@ -237,6 +322,12 @@ export const work: CaseStudy[] = [
     stack: ["Next.js", "TypeScript", "Tailwind CSS", "PostgreSQL", "Zod", "Claude API", "Redis"],
     summary:
       "An adaptive learning PWA that serves one question a day and adjusts to each learner. The level-detection logic at its core was my idea.",
+    highlights: [
+      "Proposed the \"proven floor\" level system at the heart of the app: your level only goes up, never down after one bad answer.",
+      "Built the Next.js PWA around a single daily question, with authentication and push notifications.",
+      "Connected Claude to grade free-text answers and the reasoning behind them.",
+    ],
+    takeaway: "A good idea doesn't need seniority. I suggested how learners should be levelled, and it became the core of the product.",
     overview: [
       "ThinkForge is a Progressive Web App that gives students one aptitude question a day. They answer in their own words, AI checks their reasoning, and the next question adapts to how they're doing.",
     ],
@@ -276,6 +367,12 @@ export const work: CaseStudy[] = [
     stack: ["Flutter", "Dart", "GoRouter", "Provider", "FastAPI", "Python", "Google Gemini", "Sarvam AI", "Firebase"],
     summary:
       "A voice-first platform for Indian artisans with low literacy. I worked on the Flutter app and brought the team's work together into one working product.",
+    highlights: [
+      "Built the Flutter app across the whole listing flow, from capture to sharing.",
+      "Translated the whole app into 23 languages: all 22 scheduled Indian languages plus English.",
+      "Merged everyone's branches and the backend into one app that builds on every machine.",
+    ],
+    takeaway: "Designing for people who might not read or type changes every decision, starting with the first screen: pick your language, then just talk.",
     overview: [
       "Many artisans can't write product descriptions in English or Hindi, or price their work for online buyers. With KalaSetu, an artisan takes a photo and describes the product out loud in their own language. The app turns that into a bilingual (Hindi/English), priced listing they can share.",
     ],
@@ -307,9 +404,14 @@ export const work: CaseStudy[] = [
     stack: ["React", "TypeScript", "Three.js", "React Three Fiber", "Zustand", "Framer Motion", "Vite"],
     summary:
       "A Toycathon 2026 entry: a sandbox where you run your own simulations and watch gravity warp spacetime. It reached Stage 3 of the national-level hackathon.",
+    highlights: [
+      "A spacetime grid that bends in real time as you drop in stars, planets and black holes.",
+      "Six hands-on challenges, from reaching a stable orbit to surviving near a black hole.",
+      "Quality settings from low to ultra, so it runs on any machine.",
+    ],
+    takeaway: "If you can play with an idea, you understand it. That's the whole point of the lab.",
     overview: [
       "Gravity is hard to picture. In the Space-Time Lab you drop stars, planets and black holes onto a grid and watch spacetime bend around them, then launch a rocket and see what that curvature does to its path.",
-      "The spacetime grid in the background of this site is a nod to it.",
     ],
     built: {
       heading: "What's inside",

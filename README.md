@@ -33,13 +33,14 @@ Open http://localhost:3000.
 
 | Field | What it controls |
 | --- | --- |
-| `hero` | The big headline (`lead` + highlighted `emphasis`) and intro |
-| `origin` | Chapter 01: your story, plus the three facts under it |
+| `hero` | The big headline (`lead` + highlighted `emphasis`), intro, and the line explaining the map |
+| `transitions` | The dialogue-box lines between chapters, keyed by the stop they lead into |
+| `origin` | Chapter 01: your story, the three facts under it, and the "run so far" `timeline` |
 | `values` | Chapter 02: the three principles and the "What pulls me in" quote |
-| `experience` | Chapter 04: internship and education |
-| `skills` | Chapter 05 "Loadout"; the group with `primary: true` gets the large type |
-| `offClock`, `achievements`, `now` | Chapter 06: gaming, anime and friends, achievements, what you're exploring now |
-| `closing`, `contact` | Chapter 07: closing line, email, phone, LinkedIn |
+| `experience`, `experienceIntro` | Chapter 04: internship and education, with a few points each |
+| `skills`, `loadoutIntro` | Chapter 05 "Loadout"; the group with `primary: true` gets the large type, `note` adds a line under a group |
+| `offClock`, `achievements`, `now` | Chapter 06: gaming, the stat sheet, spoken languages, achievements, what you're exploring now |
+| `closing`, `contact` | Chapter 07: closing line, "what you get" perks, email, phone, LinkedIn |
 | `resumeUrl` | Résumé download (file in `public/`) |
 | `photo` | Your portrait (`public/kush.jpg`) |
 | `siteUrl` | Your live URL, used for SEO tags, `sitemap.xml` and `robots.txt` |
@@ -48,7 +49,7 @@ Open http://localhost:3000.
 
 Each project in `work` becomes a stop on the journey **and** a page at `/work/<slug>`.
 
-- `summary` appears on the home page; `overview`, `built`, `challenge` and `decision` appear on the case-study page.
+- `summary`, `highlights` ("My part") and `takeaway` appear on the home page; `overview`, `built`, `challenge` and `decision` appear on the case-study page.
   Leave out `challenge` or `decision` if a project doesn't have one.
 - `liveUrl` adds a "Visit live site" link. Leave it out to hide the link.
 - `neon` sets the colour of the project's card on the 3D map. `billboard` is the small screenshot the card shows
