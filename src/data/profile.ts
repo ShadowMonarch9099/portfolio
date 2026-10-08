@@ -283,7 +283,6 @@ export const work: CaseStudy[] = [
     role: "Frontend-led full-stack developer",
     status: "Live in production",
     stack: ["React", "TypeScript", "Vite", "Tailwind CSS", "React Router", "Node.js", "Express", "PostgreSQL", "AWS S3", "AWS Lambda", "Docker", "Nginx"],
-    liveUrl: "https://meet.arraypointer.com",
     summary:
       "A multi-tenant meeting intelligence SaaS. I built the React frontend and the in-browser recorder, plus a large part of the Node.js backend.",
     highlights: [
@@ -428,6 +427,7 @@ export const work: CaseStudy[] = [
     period: "Mar – Oct 2026",
     status: "Hackathon project",
     stack: ["React", "TypeScript", "Three.js", "React Three Fiber", "Zustand", "Vite", "Framer Motion", "GSAP", "Tailwind CSS", "Web Workers", "Vitest", "Playwright"],
+    liveUrl: "https://cosmic-playground-seven.vercel.app",
     summary:
       "A Toycathon 2026 entry: a sandbox where you run your own simulations and watch gravity warp spacetime. It reached Stage 3 of the national-level hackathon.",
     highlights: [
@@ -507,8 +507,9 @@ export const work: CaseStudy[] = [
     context: "Personal project",
     period: "Oct 2026",
     role: "Solo developer",
-    status: "In development",
+    status: "Live",
     stack: ["Next.js", "TypeScript", "Supabase", "PostgreSQL", "Tailwind CSS", "dnd-kit", "Vercel"],
+    liveUrl: "https://kura-rank-it-all.vercel.app",
     summary:
       "A personal ranking site, anime first, with MyAnimeList and AniList scores beside every entry. Friends can sign up, build their own lists, see their taste match and send each other recommendations.",
     overview: [
