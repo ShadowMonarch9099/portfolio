@@ -72,7 +72,7 @@ export const profile = {
   role: "Frontend Developer",
   location: "Pune, India",
   timeZone: "Asia/Kolkata",
-  siteUrl: process.env.NEXT_PUBLIC_SITE_URL ?? "https://kush-honkalse.vercel.app",
+  siteUrl: process.env.NEXT_PUBLIC_SITE_URL ?? "https://know-kush-honkalse.vercel.app",
   seoTitle: "Kush Honkalse · Frontend Developer",
   seoDescription:
     "Kush Honkalse is a frontend developer from Pune who builds fast, easy-to-use interfaces with React, Next.js and TypeScript.",
