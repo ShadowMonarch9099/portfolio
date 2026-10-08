@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { getCaseStudy, work } from "@/data/profile";
+import { missionTag } from "@/components/chapters";
 import { FocusStop } from "@/components/work/FocusStop";
 import { MediaFrame } from "@/components/work/MediaFrame";
 import { Motion } from "@/components/Lazy";
@@ -51,19 +52,20 @@ export default async function CaseStudyPage({ params }: { params: Promise<{ slug
   const gallery = study.gallery.length
     ? study.gallery.map((m) => ({ media: m, label: m.alt }))
     : study.galleryPlaceholders.map((label) => ({ media: undefined, label }));
+  const phones = study.gallery.length > 0 && study.gallery.every((m) => m.portrait);
 
   return (
     <>
       <main id="main" tabIndex={-1} className="outline-none">
         <article className="mx-auto max-w-[1440px] px-5 pb-32 pt-32 sm:px-8 sm:pt-40 lg:px-12">
           <div className="max-w-[46rem] lg:w-[56%]">
-            <Link href={`/#${study.slug}`} className="pixel link-draw text-muted hover:text-fg">
-              ◀ Back to the journey
+            <Link href={study.featured ? `/#${study.slug}` : `/work#${study.slug}`} className="pixel link-draw text-muted hover:text-fg">
+              {study.featured ? "◀ Back to the journey" : "◀ Back to the archive"}
             </Link>
 
             <p className="pixel mt-12 flex items-center gap-3 text-muted">
               <span aria-hidden="true" className="size-2 bg-accent" />
-              Mission {String(index + 1).padStart(2, "0")}/{String(work.length).padStart(2, "0")} · Debrief
+              {missionTag(study.slug)} · Debrief
             </p>
             <h1 className="display mt-4 text-[clamp(3.4rem,9.5vw,8.5rem)] font-extrabold uppercase leading-[0.88] tracking-[-0.035em]">
               {study.title}
@@ -93,6 +95,7 @@ export default async function CaseStudyPage({ params }: { params: Promise<{ slug
             <div className="mt-14">
               <MediaFrame
                 media={study.cover}
+                aspect={study.cover?.kind === "video" ? "aspect-video" : undefined}
                 placeholder={`${study.title} in action`}
                 sizes="(min-width: 1024px) 736px, 100vw"
                 preload
@@ -146,14 +149,15 @@ export default async function CaseStudyPage({ params }: { params: Promise<{ slug
             </Section>
 
             <Section heading="Gallery">
-              <div className="grid gap-5 sm:grid-cols-2">
+              {/* Phone screenshots sit side by side; landscape ones lead with a wide first shot. */}
+              <div className={`grid gap-5 ${phones ? "grid-cols-2 sm:grid-cols-4 sm:gap-3" : "sm:grid-cols-2"}`}>
                 {gallery.map((g, i) => (
-                  <div key={g.label} className={i === 0 ? "sm:col-span-2" : ""}>
+                  <div key={g.label} className={!phones && i === 0 ? "sm:col-span-2" : ""}>
                     <MediaFrame
                       media={g.media}
                       placeholder={g.label}
-                      aspect={i === 0 ? "aspect-[16/9]" : "aspect-[4/3]"}
-                      sizes="(min-width: 1024px) 736px, 100vw"
+                      aspect={phones ? "aspect-[657/1421]" : i === 0 ? "aspect-[16/9]" : "aspect-[4/3]"}
+                      sizes={phones ? "(min-width: 1024px) 184px, 50vw" : "(min-width: 1024px) 736px, 100vw"}
                     />
                   </div>
                 ))}

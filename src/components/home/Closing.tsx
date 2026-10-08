@@ -1,5 +1,6 @@
 import { profile } from "@/data/profile";
 import { CopyEmail } from "./CopyEmail";
+import { level, levelLabel } from "@/components/chapters";
 import { Eyebrow, Stop } from "./Stop";
 
 export function Closing() {
@@ -14,8 +15,8 @@ export function Closing() {
   const tail = words.slice(-2).join(" ");
 
   return (
-    <Stop stop="contact" label="Contact" level="07">
-      <Eyebrow>LVL 07 · Player 2, press start</Eyebrow>
+    <Stop stop="contact" label="Contact" level={level("contact")}>
+      <Eyebrow>{levelLabel("contact", "Player 2, press start")}</Eyebrow>
       <h2 data-split className="display text-[clamp(2.8rem,6.6vw,6rem)] font-extrabold uppercase leading-[0.9] tracking-[-0.035em]">
         {head} <span className="text-accent">{tail}</span>
       </h2>

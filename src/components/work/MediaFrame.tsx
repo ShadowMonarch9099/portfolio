@@ -1,5 +1,6 @@
 import Image from "next/image";
 import type { Media } from "@/data/profile";
+import { InViewVideo } from "./InViewVideo";
 
 interface MediaFrameProps {
   media?: Media;
@@ -8,24 +9,17 @@ interface MediaFrameProps {
   aspect?: string;
   sizes: string;
   preload?: boolean;
+  /** Show the alt text as a caption under the media. */
+  caption?: boolean;
 }
 
 /** A screenshot or video in a thin frame, or a designed placeholder until one is added. */
-export function MediaFrame({ media, placeholder, aspect = "aspect-[16/10]", sizes, preload }: MediaFrameProps) {
+export function MediaFrame({ media, placeholder, aspect = "aspect-[16/10]", sizes, preload, caption = true }: MediaFrameProps) {
   return (
     <figure data-reveal className="brackets p-2">
       <div className={`relative ${aspect} overflow-hidden bg-bg-2`}>
         {media?.kind === "video" ? (
-          <video
-            src={media.src}
-            aria-label={media.alt}
-            className="absolute inset-0 size-full object-cover"
-            muted
-            loop
-            playsInline
-            autoPlay
-            controls
-          />
+          <InViewVideo src={media.src} poster={media.poster} label={media.alt} className="absolute inset-0 size-full object-cover" />
         ) : media ? (
           <Image src={media.src} alt={media.alt} fill sizes={sizes} preload={preload} className="object-cover" />
         ) : (
@@ -39,7 +33,7 @@ export function MediaFrame({ media, placeholder, aspect = "aspect-[16/10]", size
           </div>
         )}
       </div>
-      {media && <figcaption className="mt-2 px-1 text-sm italic text-muted">{media.alt}</figcaption>}
+      {media && caption && <figcaption className="mt-2 px-1 text-sm italic text-muted">{media.alt}</figcaption>}
     </figure>
   );
 }

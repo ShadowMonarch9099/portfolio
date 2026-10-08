@@ -1,4 +1,5 @@
 import { profile } from "@/data/profile";
+import { level, levelLabel } from "@/components/chapters";
 import { Eyebrow, Stop } from "./Stop";
 
 export function Loadout() {
@@ -6,8 +7,8 @@ export function Loadout() {
   const rest = profile.skills.filter((g) => !g.primary);
 
   return (
-    <Stop stop="loadout" label="Loadout" level="05">
-      <Eyebrow>LVL 05 · Loadout</Eyebrow>
+    <Stop stop="loadout" label="Loadout" level={level("loadout")}>
+      <Eyebrow>{levelLabel("loadout")}</Eyebrow>
       <h2 data-split className="display text-[clamp(2.4rem,5.4vw,5rem)] font-extrabold uppercase leading-[0.9] tracking-[-0.03em]">
         Main build: <span className="text-accent">frontend.</span>
       </h2>

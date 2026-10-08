@@ -1,12 +1,13 @@
 import Image from "next/image";
 import { profile } from "@/data/profile";
+import { level, levelLabel } from "@/components/chapters";
 import { Eyebrow, Stop } from "./Stop";
 
 export function Origin() {
   const { origin, photo } = profile;
   return (
-    <Stop stop="origin" label="Origin" level="01">
-      <Eyebrow>LVL 01 · Origin</Eyebrow>
+    <Stop stop="origin" label="Origin" level={level("origin")}>
+      <Eyebrow>{levelLabel("origin")}</Eyebrow>
       <h2 data-split className="display text-[clamp(2.2rem,4.6vw,4.2rem)] font-bold">
         {origin.title}
       </h2>
@@ -39,16 +40,7 @@ export function Origin() {
         </div>
       </div>
 
-      <dl data-reveal className="mt-12 grid gap-px overflow-hidden border-y border-line sm:grid-cols-3">
-        {origin.facts.map((f) => (
-          <div key={f.label} className="py-4 sm:pr-4">
-            <dt className="pixel text-[0.65rem] text-muted">{f.label}</dt>
-            <dd className="display mt-1.5 font-semibold">{f.value}</dd>
-          </div>
-        ))}
-      </dl>
-
-      <h3 data-reveal className="pixel mt-14 flex items-center justify-between text-muted">
+      <h3 data-reveal className="pixel mt-14 flex items-center justify-between border-t border-line pt-8 text-muted">
         <span>The run so far</span>
         <span className="text-signal">Save file</span>
       </h3>

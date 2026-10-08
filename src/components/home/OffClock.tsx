@@ -1,27 +1,16 @@
 import { profile } from "@/data/profile";
+import { level, levelLabel } from "@/components/chapters";
 import { Eyebrow, Stop } from "./Stop";
-
-/** A pixel trophy, like an in-game achievement icon. */
-function Trophy() {
-  return (
-    <svg viewBox="0 0 16 16" aria-hidden="true" className="size-10 shrink-0 text-accent" shapeRendering="crispEdges">
-      <path
-        fill="currentColor"
-        d="M4 1h8v1h2v4h-1v1h-1v1h-1v1H9v2h2v1h1v3H4v-3h1v-1h2V9H5V8H4V7H3V6H2V2h2V1Zm0 2H3v2h1V3Zm8 0v2h1V3h-1Z"
-      />
-    </svg>
-  );
-}
 
 const SKILLS = ["Speak", "Read", "Write"];
 
 export function OffClock() {
-  const { offClock, achievements, now } = profile;
+  const { offClock, now } = profile;
   // "When I'm not coding, I'm probably gaming." → small lead-in + big punchline.
   const [lead, ...rest] = offClock.title.split(", ");
   return (
-    <Stop stop="offclock" id="off-clock" label="Off the clock" level="06">
-      <Eyebrow>LVL 06 · Off the clock</Eyebrow>
+    <Stop stop="offclock" id="off-clock" label="Off the clock" level={level("off-clock")}>
+      <Eyebrow>{levelLabel("off-clock")}</Eyebrow>
       <h2 className="display">
         <span data-reveal className="block text-[clamp(1.4rem,2.8vw,2.2rem)] font-medium text-muted">
           {lead},
@@ -69,25 +58,6 @@ export function OffClock() {
               </span>
             </div>
             {"note" in l && l.note && <p className="mt-1.5 text-sm leading-relaxed text-muted text-pretty">{l.note}</p>}
-          </li>
-        ))}
-      </ul>
-
-      <h3 data-reveal className="pixel mt-12 flex items-center justify-between text-muted">
-        <span>Achievements</span>
-        <span className="text-signal">
-          {achievements.length}/{achievements.length} unlocked
-        </span>
-      </h3>
-      <ul className="mt-4 space-y-2.5">
-        {achievements.map((a) => (
-          <li key={a.title} data-reveal className="panel flex items-center gap-4 p-4">
-            <Trophy />
-            <div>
-              <p className="pixel text-[0.6rem] text-signal">Achievement unlocked</p>
-              <p className="display mt-0.5 text-lg font-bold">{a.title}</p>
-              <p className="text-sm leading-relaxed text-muted text-pretty">{a.detail}</p>
-            </div>
           </li>
         ))}
       </ul>

@@ -16,7 +16,7 @@ const ease = (t: number) => t + (t * t * (3 - 2 * t) - t) * 0.4;
  * - Wide screens: the head sits right of centre, beside the text column.
  * - Tall screens: the head sits above the text.
  * - The last stop pulls back to show the whole route.
- * - Case-study pages zoom in on their waypoint.
+ * - Case-study pages zoom in on their waypoint; the archive and side missions show the whole map.
  * - Scrolling fast widens the field of view a little ("speed boost").
  */
 export function CameraRig() {
@@ -38,7 +38,9 @@ export function CameraRig() {
     const wide = size.width / size.height > 1.05;
     const reduced = sceneStore.reducedMotion;
     const max = WAYPOINTS.length - 1;
-    const progress = Math.min(Math.max(sceneStore.progress, 0), max);
+    const focusIndex = sceneStore.focus ? WAYPOINTS.findIndex((w) => w.id === sceneStore.focus) : -1;
+    // A page with a focus that isn't on the route (the archive, side missions) shows the whole map.
+    const progress = sceneStore.focus && focusIndex < 0 ? max : Math.min(Math.max(sceneStore.progress, 0), max);
 
     // Where along the route are we? Reduced motion jumps straight to each stop.
     let dist: number;
@@ -49,7 +51,6 @@ export function CameraRig() {
       dist = THREE.MathUtils.lerp(ROUTE.stopDist[i], ROUTE.stopDist[Math.min(i + 1, max)], f);
     }
 
-    const focusIndex = sceneStore.focus ? WAYPOINTS.findIndex((w) => w.id === sceneStore.focus) : -1;
     if (focusIndex >= 0) dist = ROUTE.stopDist[focusIndex];
     live.headDist = dist;
     const head = routeAt(dist);

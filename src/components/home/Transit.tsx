@@ -5,6 +5,11 @@ interface TransitProps {
   to: string;
   /** Label of the next stop, e.g. "LVL 02 · Principles". */
   next: string;
+  /**
+   * The save point between the two acts: once the briefing is done, visitors
+   * can carry on into the story, skip straight to contact, or grab the résumé.
+   */
+  savePoint?: boolean;
 }
 
 /**
@@ -13,7 +18,7 @@ interface TransitProps {
  * waypoints; the box itself sits right above the section it introduces.
  * Its words light up as you scroll past (see Motion).
  */
-export function Transit({ to, next }: TransitProps) {
+export function Transit({ to, next, savePoint }: TransitProps) {
   const line = profile.transitions[to];
   if (!line) return null;
   return (
@@ -26,12 +31,35 @@ export function Transit({ to, next }: TransitProps) {
             <p data-words className="display text-[clamp(1.25rem,2.3vw,1.75rem)] font-semibold leading-snug text-balance">
               {line}
             </p>
-            <p className="pixel mt-4 flex items-center justify-between gap-4 text-[0.6rem] text-muted">
-              <span>Next: {next}</span>
-              <span aria-hidden="true" className="blink text-accent">
-                ▼
-              </span>
-            </p>
+            {savePoint ? (
+              <div className="mt-5 border-t border-line pt-4">
+                <p className="pixel flex items-center gap-2 text-[0.6rem] text-signal">
+                  <span aria-hidden="true" className="blink">
+                    ◆
+                  </span>
+                  Save point · briefing complete
+                </p>
+                <div className="mt-4 flex flex-wrap items-center gap-2.5">
+                  <a href={`#${to}`} className="btn btn-sm">
+                    Continue <span aria-hidden="true">▼</span>
+                  </a>
+                  <a href="#contact" className="btn btn-ghost btn-sm">
+                    Skip to contact <span aria-hidden="true">▶</span>
+                  </a>
+                  <a href={profile.resumeUrl} download className="btn btn-ghost btn-sm">
+                    Résumé <span aria-hidden="true">↓</span>
+                  </a>
+                </div>
+                <p className="pixel mt-4 text-[0.6rem] text-muted">Next: {next}</p>
+              </div>
+            ) : (
+              <p className="pixel mt-4 flex items-center justify-between gap-4 text-[0.6rem] text-muted">
+                <span>Next: {next}</span>
+                <span aria-hidden="true" className="blink text-accent">
+                  ▼
+                </span>
+              </p>
+            )}
           </div>
         </div>
       </div>

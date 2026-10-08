@@ -1,10 +1,11 @@
 import { profile } from "@/data/profile";
+import { level, levelLabel } from "@/components/chapters";
 import { Eyebrow, Stop } from "./Stop";
 
 export function Experience() {
   return (
-    <Stop stop="experience" label="Experience" level="04">
-      <Eyebrow>LVL 04 · Quest log</Eyebrow>
+    <Stop stop="experience" label="Experience" level={level("experience")}>
+      <Eyebrow>{levelLabel("experience")}</Eyebrow>
       <h2 data-split className="display text-[clamp(2.2rem,4.6vw,4.2rem)] font-bold">
         Six months in <span className="text-accent">production.</span>
       </h2>

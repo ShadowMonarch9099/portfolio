@@ -1,4 +1,4 @@
-import { work } from "@/data/profile";
+import { NEON, STOPS } from "../chapters";
 
 /**
  * World layout for the holographic mission map. The city is a grid of
@@ -6,13 +6,6 @@ import { work } from "@/data/profile";
  * stop is a waypoint at a street intersection, and a GPS-style route runs
  * along the streets from one waypoint to the next.
  */
-
-export const NEON = {
-  orange: "#ff7a3d",
-  teal: "#5ee6d0",
-  pink: "#ff3d8b",
-  yellow: "#ffd23d",
-};
 
 /** Distance between street centre-lines. */
 export const BLOCK = 14;
@@ -37,28 +30,19 @@ export interface Waypoint {
   color: string;
 }
 
-const projects: Waypoint[] = work.map((w, i) => ({
-  id: w.slug,
-  label: `MISSION 0${i + 1} · ${w.title.toUpperCase()}`,
-  cell: [[7, -15], [2, -20], [8, -25], [2, -30]][i % 4] as [number, number],
-  image: w.billboard,
-  color: w.neon,
-}));
+/** Street columns the waypoints zig-zag between, in scroll order. */
+const COLUMNS = [2, 6, 1, 7, 2, 8, 2, 7, 0, 6, 1, 7, 2];
+/** The route always runs from the first block row to row -50, however many stops there are. */
+const ROUTE_ROWS = 50;
 
 /** One waypoint per home-page stop, in scroll order. */
-export const WAYPOINTS: Waypoint[] = [
-  { id: "hero", label: "START · KUSH", cell: [2, 0], color: NEON.orange },
-  { id: "origin", label: "LVL 01 · ORIGIN", cell: [6, -5], color: NEON.teal },
-  { id: "values", label: "LVL 02 · PRINCIPLES", cell: [1, -10], color: NEON.teal },
-  ...projects,
-  { id: "experience", label: "LVL 04 · QUEST LOG", cell: [7, -35], color: NEON.yellow },
-  { id: "loadout", label: "LVL 05 · LOADOUT", cell: [0, -40], color: NEON.teal },
-  { id: "offclock", label: "LVL 06 · OFF THE CLOCK", cell: [6, -45], color: NEON.pink },
-  { id: "contact", label: "LVL 07 · PRESS START", cell: [2, -50], color: NEON.orange },
-];
-
-/** Home-page stops, in scroll order. Each maps to a waypoint above and a DOM section. */
-export const STOPS = WAYPOINTS.map((w) => w.id);
+export const WAYPOINTS: Waypoint[] = STOPS.map((s, i) => ({
+  id: s.id,
+  label: s.map,
+  cell: [COLUMNS[i % COLUMNS.length], -Math.round((i * ROUTE_ROWS) / (STOPS.length - 1))],
+  image: s.image,
+  color: s.color,
+}));
 
 export const toWorld = ([cx, cz]: [number, number]): [number, number] => [cx * BLOCK, cz * BLOCK];
 

@@ -1,11 +1,12 @@
 import { profile } from "@/data/profile";
+import { level, levelLabel } from "@/components/chapters";
 import { Eyebrow, Stop } from "./Stop";
 
 export function Principles() {
   const { values } = profile;
   return (
-    <Stop stop="values" id="principles" label="Principles" level="02">
-      <Eyebrow>LVL 02 · Principles</Eyebrow>
+    <Stop stop="values" id="principles" label="Principles" level={level("principles")}>
+      <Eyebrow>{levelLabel("principles")}</Eyebrow>
       <h2 data-split className="display text-[clamp(2.2rem,4.6vw,4.2rem)] font-bold">
         {values.title}
       </h2>

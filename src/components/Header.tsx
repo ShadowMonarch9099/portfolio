@@ -4,7 +4,7 @@ import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { useRef } from "react";
 import { profile } from "@/data/profile";
-import { CHAPTERS } from "./chapters";
+import { ACTS, CHAPTERS, level } from "./chapters";
 import { scrollToTarget } from "./scroll";
 import { ThemeToggle } from "./ThemeToggle";
 
@@ -85,38 +85,49 @@ export function Header() {
             </form>
           </div>
 
-          <nav aria-label="Chapters" className="flex flex-1 items-center overflow-y-auto py-6">
-            <ol className="w-full">
-              {CHAPTERS.map((c, i) => (
-                <li key={c.id} className="border-t border-line last:border-b">
-                  <a
-                    href={`/#${c.id}`}
-                    onClick={(e) => go(e, c.id)}
-                    className="group flex items-center gap-4 py-3 transition-colors hover:text-accent sm:gap-8 sm:py-3.5"
-                  >
-                    <span className="pixel w-14 shrink-0 text-muted group-hover:text-accent">
-                      LVL {String(i + 1).padStart(2, "0")}
-                    </span>
-                    <span className="display text-3xl font-extrabold uppercase transition-transform duration-500 ease-(--ease-out-expo) group-hover:translate-x-3 sm:text-6xl">
-                      {c.label}
-                    </span>
-                    <span aria-hidden="true" className="pixel text-accent opacity-0 transition-opacity group-hover:opacity-100">
-                      ◀
-                    </span>
-                    <span className="meta ml-auto hidden text-muted sm:inline">{c.note}</span>
-                  </a>
-                </li>
+          {/* my-auto (not items-center) keeps the top reachable when the list is taller than the screen. */}
+          <nav aria-label="Chapters" className="flex flex-1 overflow-y-auto py-6">
+            <div className="my-auto w-full space-y-5">
+              {ACTS.map((a) => (
+                <div key={a.act}>
+                  <p className="pixel mb-2 text-[0.6rem] text-signal">{a.label}</p>
+                  <ol>
+                    {CHAPTERS.filter((c) => c.act === a.act).map((c) => (
+                      <li key={c.id} className="border-t border-line last:border-b">
+                        <a
+                          href={`/#${c.id}`}
+                          onClick={(e) => go(e, c.id)}
+                          className="group flex items-center gap-4 py-2.5 transition-colors hover:text-accent sm:gap-8 sm:py-3"
+                        >
+                          <span className="pixel w-14 shrink-0 text-muted group-hover:text-accent">LVL {level(c.id)}</span>
+                          <span className="display text-3xl font-extrabold uppercase transition-transform duration-500 ease-(--ease-out-expo) group-hover:translate-x-3 sm:text-[min(3.75rem,5.6vh)]">
+                            {c.label}
+                          </span>
+                          <span aria-hidden="true" className="pixel text-accent opacity-0 transition-opacity group-hover:opacity-100">
+                            ◀
+                          </span>
+                          <span className="meta ml-auto hidden text-muted sm:inline">{c.note}</span>
+                        </a>
+                      </li>
+                    ))}
+                  </ol>
+                </div>
               ))}
-            </ol>
+            </div>
           </nav>
 
           <div className="flex flex-wrap items-center justify-between gap-4 py-6 text-sm text-muted">
             <a className="link-draw hover:text-fg" href={`mailto:${profile.contact.email}`}>
               {profile.contact.email}
             </a>
-            <a className="pixel link-draw hover:text-fg" href={profile.resumeUrl} download>
-              Download résumé
-            </a>
+            <span className="flex flex-wrap items-center gap-6">
+              <Link className="pixel link-draw hover:text-fg" href="/work" onClick={() => dialogRef.current?.close()}>
+                Mission archive ▶
+              </Link>
+              <a className="pixel link-draw hover:text-fg" href={profile.resumeUrl} download>
+                Download résumé
+              </a>
+            </span>
           </div>
         </div>
       </dialog>

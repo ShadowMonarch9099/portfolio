@@ -13,12 +13,18 @@ export interface Media {
   alt: string;
   /** Set to "video" for .mp4/.webm files. */
   kind?: "image" | "video";
+  /** Still frame shown before a video plays. */
+  poster?: string;
+  /** Tall phone screenshots; shown side by side in a phone-shaped frame. */
+  portrait?: boolean;
 }
 
 export interface CaseStudy {
   slug: string;
   title: string;
   tagline: string;
+  /** Shown as a stop on the home page and on the map. Everything else lives in the archive (/work). */
+  featured?: boolean;
   /** Where/why it was built, e.g. "ArrayPointer internship". */
   context: string;
   period: string;
@@ -26,12 +32,12 @@ export interface CaseStudy {
   status: string;
   stack: string[];
   liveUrl?: string;
-  /** Short intro shown on the home page. */
+  /** Short intro shown on the home page and in the archive. */
   summary: string;
-  /** "My part": three short points shown on the home page. */
-  highlights: string[];
-  /** One line on what the project taught me. */
-  takeaway: string;
+  /** "My part": three short points shown on the home page (featured projects). */
+  highlights?: string[];
+  /** One line on what the project taught me (featured projects). */
+  takeaway?: string;
   /** Case-study sections. Omit any that don't apply. */
   overview: string[];
   built: { heading: string; points: string[] };
@@ -42,8 +48,8 @@ export interface CaseStudy {
   gallery: Media[];
   /** Placeholder labels for the gallery until real media is added. */
   galleryPlaceholders: string[];
-  /** Neon colour of this project's billboard in the 3D city. */
-  neon: string;
+  /** Neon colour of this project's billboard in the 3D city (featured projects). */
+  neon?: string;
   /** Small screenshot shown on the project's billboard (under /public). Leave out to show the title instead. */
   billboard?: string;
 }
@@ -88,7 +94,7 @@ export const profile = {
     intro:
       "Frontend developer from Pune and final-year AI & Data Science student, graduating May 2027. I care about three things: that it's fast, that it's easy to use, and that it looks right.",
     /** Explains the map in the background. */
-    guide: "This page is a map of how I got here. Scroll, and the route follows the story one stop at a time.",
+    guide: "This page is a map. The route runs through the briefing first (work, projects, skills), then the story behind it, one stop at a time.",
   },
 
   /** The "player card" in the hero. `build` is how my focus splits between frontend and backend. */
@@ -96,6 +102,7 @@ export const profile = {
     class: "Frontend Developer",
     main: "React · Next.js · TypeScript",
     base: "Pune, India",
+    openTo: "Full-time · Internships · Freelance",
     build: [
       { label: "Frontend", value: 70 },
       { label: "Backend", value: 30 },
@@ -104,31 +111,35 @@ export const profile = {
 
   /**
    * Bridges shown between stops, as a game dialogue box, so each section
-   * leads into the next one. Keyed by the stop they lead into (see scene/world.ts).
+   * leads into the next one. Keyed by the stop they lead into (see components/chapters.ts).
+   * Act 1 (the briefing) comes first; `origin` is the save point between the two acts.
    */
   transitions: {
-    origin: "Every player has an origin story. Mine starts later than most.",
-    values: "Building things taught me quickly that working isn't the same as finished.",
-    meet: "Principles are easy to write down. These projects are where I had to live up to them.",
+    experience: "Quick briefing first: where I've worked, what I built and what I use. The story comes after.",
+    meet: "Six months at ArrayPointer, two products. This is the one that went live.",
     thinkforge: "Meet taught me how a whole product holds together. ThinkForge is where one of my own ideas ended up at the centre of one.",
     kalasetu: "Both of those were built for people sitting at a screen. The next one is for people who may never type a word.",
     "space-time-lab": "Not everything I build starts with a brief. Sometimes it starts with something I can't picture.",
-    experience: "Two of those were built in the same six months, at the same company.",
-    loadout: "Six months of shipping also settles which tools you reach for first.",
-    offclock: "That's the work. Here's what fills the rest of the day.",
+    loadout: "Every one of those missions ran on the same loadout. Here's what I reach for first.",
+    trophies: "Tools are one thing. Here's what they've earned so far.",
+    origin: "That's the briefing. The rest is the player behind it, and every player has an origin story. Mine starts later than most.",
+    values: "Building things taught me quickly that working isn't the same as finished.",
+    offclock: "That's how I work. Here's what fills the rest of the day.",
     contact: "That's the run so far. The next level needs a second player.",
   } as Record<string, string>,
+
+  /** The home page's link to the archive, after the featured missions. */
+  archive: {
+    teaser: "Four main missions on the map. The archive has every side mission too.",
+    title: "Every mission, in one place.",
+    intro: "The four main missions from the map, plus every side mission. Each one has a screenshot, the stack, and a debrief with the details.",
+  },
 
   origin: {
     title: "I didn't write a single line of code until my first year of college.",
     body: [
       "No early head start. Programming reached me in my first year of engineering, through the curriculum and through my friends. Watching them build things made me want to build things too.",
       "I lean towards the frontend because I want to make the things people see, use and react to. I'm comfortable on the backend, but the interface is where I want to be.",
-    ],
-    facts: [
-      { label: "Studying", value: "B.E. AI & Data Science, MMCOE" },
-      { label: "Graduating", value: "May 2027 · CGPA 8.3" },
-      { label: "Based in", value: "Pune, India" },
     ],
     /** "The run so far": milestones, oldest first. */
     timeline: [
@@ -178,10 +189,10 @@ export const profile = {
       role: "B.E., Artificial Intelligence & Data Science",
       period: "Graduating May 2027",
       place: "Pune",
-      summary: "CGPA 8.3 / 10.",
+      summary: "CGPA 8.3 / 10. Final year, graduating May 2027.",
       points: [
         "Technical Head of AESA MMCOE in third year: ran the department's technical events and mentored juniors on their projects.",
-        "Stage 3 of Toycathon 2026 with the Space-Time Lab.",
+        "Final-year project: Sakshya, a multilingual document search with page-level citations (in the archive).",
       ],
     },
   ],
@@ -238,7 +249,6 @@ export const profile = {
   achievements: [
     { title: "Toycathon 2026", detail: "Qualified for Stage 3 of the national-level hackathon with the Space-Time Lab." },
     { title: "Shipped to production", detail: "Meet went live in production during my internship." },
-    { title: "Technical Head, AESA MMCOE", detail: "Ran the department's technical events and mentored juniors on their projects." },
     { title: "Smart India Hackathon", detail: "Took part three years running: 2024, 2025 and 2026." },
     { title: "Full-Stack Web Development", detail: "Completed the Udemy bootcamp certification." },
   ],
@@ -265,6 +275,7 @@ export const profile = {
 export const work: CaseStudy[] = [
   {
     slug: "meet",
+    featured: true,
     title: "Meet",
     tagline: "Record a meeting in the browser. Get the transcript, summary and action items.",
     context: "ArrayPointer internship",
@@ -313,6 +324,7 @@ export const work: CaseStudy[] = [
   },
   {
     slug: "thinkforge",
+    featured: true,
     title: "ThinkForge",
     tagline: "One aptitude question a day, pitched at exactly your level.",
     context: "ArrayPointer internship",
@@ -358,6 +370,7 @@ export const work: CaseStudy[] = [
   },
   {
     slug: "kalasetu",
+    featured: true,
     title: "KalaSetu",
     tagline: "A photo and a few spoken sentences become an online product listing.",
     context: "Smart India Hackathon 2026",
@@ -390,18 +403,31 @@ export const work: CaseStudy[] = [
         "Different teammates built different screens on their own branches. I merged them into a single app, brought in the backend code, and fixed what broke along the way, including matching everyone's Flutter SDK and Gradle versions so the project built on every machine.",
       ],
     },
-    gallery: [],
+    cover: {
+      src: "/work/kalasetu/demo.mp4",
+      kind: "video",
+      poster: "/work/kalasetu/demo-poster.jpg",
+      alt: "Demo of the KalaSetu web app: picking a language, signing in, photographing a product, describing it by voice in Hindi, and confirming the listing",
+    },
+    gallery: [
+      { src: "/work/kalasetu/language.jpg", portrait: true, alt: "Mobile app: pick a language, or speak to detect it" },
+      { src: "/work/kalasetu/onboarding.jpg", portrait: true, alt: "Artisan onboarding: scan an ID card to fill in registry details (sample data)" },
+      { src: "/work/kalasetu/approval.jpg", portrait: true, alt: "Review the generated product card before it's listed (sample data)" },
+      { src: "/work/kalasetu/distribution.jpg", portrait: true, alt: "Published listing, with WhatsApp sharing and marketplace sync (sample data)" },
+    ],
     galleryPlaceholders: ["Language selection", "Capture and image studio", "Generated listing"],
     neon: "#5ee6d0",
+    billboard: "/work/kalasetu/billboard.jpg",
   },
   {
     slug: "space-time-lab",
+    featured: true,
     title: "Space-Time Lab",
     tagline: "A playable 3D sandbox that shows how mass bends spacetime.",
     context: "Toycathon 2026 · qualified for Stage 3",
-    period: "Mar 2026",
+    period: "Mar – Oct 2026",
     status: "Hackathon project",
-    stack: ["React", "TypeScript", "Three.js", "React Three Fiber", "Zustand", "Framer Motion", "Vite"],
+    stack: ["React", "TypeScript", "Three.js", "React Three Fiber", "Zustand", "Vite", "Framer Motion", "GSAP", "Tailwind CSS", "Web Workers", "Vitest", "Playwright"],
     summary:
       "A Toycathon 2026 entry: a sandbox where you run your own simulations and watch gravity warp spacetime. It reached Stage 3 of the national-level hackathon.",
     highlights: [
@@ -412,6 +438,7 @@ export const work: CaseStudy[] = [
     takeaway: "If you can play with an idea, you understand it. That's the whole point of the lab.",
     overview: [
       "Gravity is hard to picture. In the Space-Time Lab you drop stars, planets and black holes onto a grid and watch spacetime bend around them, then launch a rocket and see what that curvature does to its path.",
+      "Since Toycathon it has grown into Cosmic Playground, built with my teammates Insiya and Srushti. The Spacetime Lab now runs real N-body gravity, and a second lab, the Rocket Lab, lets you set up a two-stage rocket, the weather and the planet, predict what will happen, then fly it.",
     ],
     built: {
       heading: "What's inside",
@@ -421,6 +448,8 @@ export const work: CaseStudy[] = [
         "Time controls with rewind and replay, and a rocket launcher with a live trajectory preview.",
         "Six challenges to learn by doing: reach a stable orbit, escape a planet's gravity, pull off a gravity slingshot, land safely, stabilise a binary system and survive near a black hole.",
         "Advanced modes for three-body chaos, relativity, energy visualisation, dark matter and stability analysis, plus quality settings from low to ultra so it runs on any machine.",
+        "Cosmic Playground: N-body physics in a Web Worker on a fixed time step, so a 64× time warp gives exactly the same result as 64 times as many frames, with tests to prove it.",
+        "The Rocket Lab: eight weather conditions, a flight director and a launch coach that read live telemetry, and a mission report that explains every outcome with numbers.",
       ],
     },
     cover: { src: "/work/space-time-lab/cover.jpg", alt: "Space-Time Lab sandbox: a black hole, planets and a comet bending the spacetime grid" },
@@ -428,10 +457,148 @@ export const work: CaseStudy[] = [
       { src: "/work/space-time-lab/blackhole.jpg", alt: "A black hole's accretion disk and the grid curving around it" },
       { src: "/work/space-time-lab/modes.jpg", alt: "Advanced modes: three-body chaos, relativity, energy, dark matter and stability" },
       { src: "/work/space-time-lab/side-view.jpg", alt: "Side view of the sandbox with the object library and experiments panel" },
+      { src: "/work/space-time-lab/cosmic-spacetime.jpg", alt: "Cosmic Playground: aiming a comet, with its predicted path showing it stays in orbit" },
+      { src: "/work/space-time-lab/cosmic-rocket.jpg", alt: "Cosmic Playground's Rocket Lab: the mission report after a stable orbit, beside the flight director and launch coach" },
     ],
     galleryPlaceholders: ["Spacetime grid bending around a star", "Rocket trajectory preview", "Challenges panel"],
     neon: "#ff3d8b",
     billboard: "/work/space-time-lab/billboard.jpg",
+  },
+
+  /* Side missions: in the archive only. */
+  {
+    slug: "fathom",
+    title: "Fathom",
+    tagline: "Dive from the surface to the Mariana Trench, and log 141 real species on the way.",
+    context: "Personal project",
+    period: "Oct 2026",
+    role: "Solo developer",
+    status: "Live",
+    stack: ["JavaScript", "HTML5 Canvas", "CSS3", "Web Audio API", "WoRMS, OBIS and Wikipedia data", "Vercel"],
+    liveUrl: "https://deepseadive.vercel.app",
+    summary:
+      "A 2D pixel-art ocean exploration game that teaches marine biology without walls of text. Frontend only: plain HTML, CSS and JavaScript, with no framework and no build step.",
+    overview: [
+      "Fathom is a pixel-art submarine game. You dive from the sunlit surface to the bottom of the Mariana Trench, scan the animals you meet, and build your own field guide of 141 real species as you go.",
+      "It's frontend only, with no framework and no build step. Progress saves in the browser, and a short save code carries it to another device without an account.",
+    ],
+    built: {
+      heading: "What's inside",
+      points: [
+        "Five real ocean zones with true depth, pressure, temperature and sunlight readouts, from the coral reef and kelp forest by the shore down to a hydrothermal vent field and the Challenger Deep.",
+        "Dithered pixel lighting: sunlight fades with depth, the headlights cut a cone through the dark, and bioluminescent animals glow on their own.",
+        "A field guide built on real data: names and classification from WoRMS, sighting depths from OBIS, and summaries and photos from Wikipedia.",
+        "Music, ambience and effects generated with the Web Audio API, so the game ships with no sound files.",
+        "Keyboard, mouse, gamepad and touch controls, with settings for reduced motion, larger text and a high-contrast HUD.",
+      ],
+    },
+    cover: { src: "/work/fathom/cover.jpg", alt: "Fathom: the submarine over the coral reef, surrounded by reef species" },
+    gallery: [
+      { src: "/work/fathom/title.jpg", alt: "Title screen: the research vessel and the sub at the surface, ready for a day or night dive" },
+      { src: "/work/fathom/species-logged.jpg", alt: "Logging a new species: a scalloped hammerhead, with its field-guide card" },
+      { src: "/work/fathom/hangar.jpg", alt: "The hangar: hull, battery, headlight, sonar, thruster and scanner upgrades" },
+    ],
+    galleryPlaceholders: ["Diving through the twilight zone", "Field guide", "Hangar upgrades"],
+  },
+  {
+    slug: "kura",
+    title: "Kura",
+    tagline: "One ranked list of everything I've watched, with the official scores beside it.",
+    context: "Personal project",
+    period: "Oct 2026",
+    role: "Solo developer",
+    status: "In development",
+    stack: ["Next.js", "TypeScript", "Supabase", "PostgreSQL", "Tailwind CSS", "dnd-kit", "Vercel"],
+    summary:
+      "A personal ranking site, anime first, with MyAnimeList and AniList scores beside every entry. Friends can sign up, build their own lists, see their taste match and send each other recommendations.",
+    overview: [
+      "Kura started as one numbered list of every anime I've watched since 2020, with MyAnimeList and AniList scores beside each entry. It now ranks movies, series, games and music too, and friends can sign up and build their own lists.",
+    ],
+    built: {
+      heading: "What's inside",
+      points: [
+        "Search with official scores, head-to-head ranking to place each new title, and drag to reorder.",
+        "Filters by genre, format, length, decade and studio, with ranks like \"#3 in Romance · #41 overall\", and a view of where my list disagrees with MAL.",
+        "A social layer: sign-up with email or Google, follows, friends-only lists, taste match, recommendations, reactions and comments.",
+        "Watching now with episode progress and next-episode alerts, where to stream, and stats with a shareable year card.",
+        "Separate rankings for movies, series, games and music, with scores from TMDB, OMDb, IGDB, OpenCritic, Steam, Spotify and Last.fm, cached and refreshed nightly.",
+      ],
+    },
+    cover: { src: "/work/kura/cover.jpg", alt: "Kura's home page: the welcome screen beside a carousel of top picks by genre" },
+    gallery: [
+      { src: "/work/kura/ranking.jpg", alt: "The anime ranking, with MyAnimeList and AniList scores beside each entry" },
+      { src: "/work/kura/title-page.jpg", alt: "A title page: my score and verdict, genres and the synopsis" },
+      { src: "/work/kura/games.jpg", alt: "The games ranking, and the biggest gaps between my scores and OpenCritic's" },
+    ],
+    galleryPlaceholders: ["Ranked list with official scores", "Head-to-head placement", "Taste match"],
+  },
+  {
+    slug: "pehno",
+    title: "PEHNO",
+    tagline: "Photograph your wardrobe. Get an outfit for the weather, the occasion and the festival.",
+    context: "Personal project",
+    period: "Apr – Sep 2026",
+    role: "Full-stack developer",
+    status: "In development",
+    stack: ["React Native (Expo)", "TypeScript", "Zustand", "FastAPI", "Python", "PostgreSQL", "Redis", "Celery", "Next.js", "CLIP"],
+    summary:
+      "AI wardrobe intelligence for India. It digitises an Indian wardrobe (ethnic, fusion and western), classifies each garment with vision AI, and recommends outfits from live weather, occasions and the festival calendar.",
+    overview: [
+      "PEHNO (\"wear\" in Hindi) digitises an Indian wardrobe, from ethnic to western, and answers the daily question of what to wear. Each garment is classified by vision AI, and outfits are scored against the weather, the occasion, the festival calendar, fabric and weather rules, and personal style.",
+    ],
+    built: {
+      heading: "What I built",
+      points: [
+        "The FastAPI backend (async SQLAlchemy, Alembic): OTP sign-in, wardrobe uploads and image processing, outfits, festivals, billing and an admin API, with tests running in CI.",
+        "A garment classifier pipeline: colour extraction, a pluggable vision model (CLIP zero-shot for now) and rules for occasion, season, regional style and fabric care, with a correction loop that collects training data.",
+        "An outfit engine with five scoring layers (weather, occasion, colour and skin tone, festival, personal taste), built on an Indian knowledge base of festivals, fabrics and occasions, including a Navratri nine-colour tracker.",
+        "The React Native (Expo) app: onboarding, wardrobe, daily look, festivals and settings, with a web build for testing on a laptop.",
+        "A Next.js admin dashboard for metrics, stylists, brands and festivals.",
+      ],
+    },
+    cover: { src: "/work/pehno/cover.jpg", alt: "PEHNO's mobile app: the wardrobe, today's look for Pune's weather, and the festival calendar (test data)" },
+    gallery: [
+      { src: "/work/pehno/welcome.jpg", portrait: true, alt: "Welcome screen: AI wardrobe intelligence built for India" },
+      { src: "/work/pehno/wardrobe.jpg", portrait: true, alt: "My wardrobe: AI-tagged garments with fabric and occasion (test data)" },
+      { src: "/work/pehno/todays-look.jpg", portrait: true, alt: "Today's look, picked for the weather in Pune (test data)" },
+      { src: "/work/pehno/festivals.jpg", portrait: true, alt: "Festival calendar: Navratri's nine colours, Dussehra and Diwali" },
+    ],
+    galleryPlaceholders: ["Daily look", "Wardrobe", "Festival tracker"],
+  },
+  {
+    slug: "sakshya",
+    title: "Sakshya",
+    tagline: "Ask in English, Hindi or Marathi. Every answer cites its page, or there's no answer at all.",
+    context: "B.E. final-year project · team of 2",
+    period: "Sep 2026 – present",
+    status: "In development",
+    stack: ["Next.js", "TypeScript", "pdf.js", "FastAPI", "Python", "PostgreSQL", "pgvector", "Tesseract OCR", "multilingual-E5", "BM25"],
+    summary:
+      "A citation-grounded RAG system for private English, Hindi and Marathi documents, scans included. Every sentence of an answer cites its page, and when the documents don't hold the answer, it says so.",
+    overview: [
+      "Sakshya (\"evidence\") answers questions about private document collections in English, Hindi and Marathi: PDFs, Word files and scanned pages. Every sentence of an answer has to cite the page it came from. When the evidence isn't strong enough, it abstains and shows the nearest pages instead of guessing.",
+      "It's our final-year B.E. project in AI & Data Science at MMCOE, built by a team of two.",
+    ],
+    built: {
+      heading: "What's inside",
+      points: [
+        "Ingestion that reads each page from its text layer or with OCR (Tesseract, in Marathi, Hindi and English), and catches Devanagari text layers that look valid but aren't, such as legacy fonts.",
+        "Page-anchored chunks, so every citation points to a real page, shown on the original document with the passage highlighted (pdf.js).",
+        "Hybrid retrieval: multilingual-E5 vectors in pgvector and BM25 over words and character n-grams, with a router that picks a route for each question and a multilingual reranker.",
+        "Questions in English, Hindi, Marathi or romanized text, with numbers and IDs matched exactly (१४२ and 142 are the same number).",
+        "An evidence gate and a citation check: uncited sentences are removed, and every number in an answer must appear on a page it cites.",
+      ],
+    },
+    cover: {
+      src: "/work/sakshya/cover.jpg",
+      alt: "An English question about a scanned Marathi land notice, answered with page citations and the passage highlighted on the original page",
+    },
+    gallery: [
+      { src: "/work/sakshya/why-this-route.jpg", alt: "Technical details: why the router chose hybrid search, the question's features and each route's score" },
+      { src: "/work/sakshya/document-analysis.jpg", alt: "How a document was read: file type check, OCR confidence, language mix and the extracted text" },
+      { src: "/work/sakshya/documents.jpg", alt: "The three-pane layout: documents, conversation and the cited page" },
+    ],
+    galleryPlaceholders: ["Question with cited answer", "Cited page, highlighted", "Documents being read"],
   },
 ];
 

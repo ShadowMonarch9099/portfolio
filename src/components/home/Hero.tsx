@@ -29,7 +29,7 @@ export function Hero() {
       </p>
 
       <div data-reveal className="mt-7 flex flex-wrap items-center gap-4">
-        <a href="#origin" data-magnetic className="btn">
+        <a href="#experience" data-magnetic className="btn">
           Press start <span aria-hidden="true">▶</span>
         </a>
         <a href={profile.resumeUrl} download data-magnetic className="btn btn-ghost">
@@ -50,6 +50,15 @@ export function Hero() {
         <div className="col-span-2 sm:col-span-1">
           <dt className="pixel text-[0.65rem] text-muted">Base</dt>
           <dd className="display mt-1 text-base font-semibold">{player.base}</dd>
+        </div>
+        <div className="col-span-2 sm:col-span-3">
+          <dt className="pixel text-[0.65rem] text-muted">Open to</dt>
+          <dd className="display mt-1 flex items-center gap-2 text-base font-semibold">
+            <span aria-hidden="true" className="blink pixel text-[0.6rem] text-signal">
+              ●
+            </span>
+            {player.openTo}
+          </dd>
         </div>
         <div className="col-span-2 sm:col-span-3">
           <dt className="pixel text-[0.65rem] text-muted">Build</dt>
