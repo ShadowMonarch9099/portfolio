@@ -14,22 +14,26 @@ export const metadata: Metadata = {
   openGraph: { url: "/work", title: `Mission archive · ${profile.name}`, description: profile.archive.intro },
 };
 
-/** The card's main still: the cover (a video's poster frame), or the first screenshot. */
-function still(w: CaseStudy): Media | undefined {
-  const c = w.cover;
-  if (c?.kind === "video") return c.poster ? { src: c.poster, alt: c.alt } : w.gallery[0];
-  return c ?? w.gallery[0];
+/** The card's main media: the cover (a demo video plays while on screen), or the first screenshot. */
+function lead(w: CaseStudy): Media | undefined {
+  return w.cover ?? w.gallery[0];
 }
 
 function MissionCard({ w }: { w: CaseStudy }) {
-  const cover = still(w);
+  const cover = lead(w);
   // A few more screenshots under the cover; phone shots sit four to a row.
   const phones = w.gallery.length > 0 && w.gallery.every((m) => m.portrait);
   const thumbs = w.gallery.filter((m) => m.src !== cover?.src).slice(0, phones ? 4 : 3);
 
   return (
     <article data-reveal className="panel p-4 sm:p-5">
-      <MediaFrame media={cover} placeholder={`${w.title} in action`} caption={false} sizes="(min-width: 1024px) 700px, 100vw" />
+      <MediaFrame
+        media={cover}
+        placeholder={`${w.title} in action`}
+        aspect={cover?.kind === "video" ? "aspect-video" : undefined}
+        caption={false}
+        sizes="(min-width: 1024px) 700px, 100vw"
+      />
       {thumbs.length > 0 && (
         <ul aria-label={`More ${w.title} screenshots`} className={`mt-2 grid gap-2 ${phones ? "grid-cols-4" : "grid-cols-3"}`}>
           {thumbs.map((m) => (
