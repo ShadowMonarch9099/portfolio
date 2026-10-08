@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { getCaseStudy, work } from "@/data/profile";
-import { missionTag } from "@/components/chapters";
+import { levelLabel, missionTag } from "@/components/chapters";
 import { FocusStop } from "@/components/work/FocusStop";
 import { MediaFrame } from "@/components/work/MediaFrame";
 import { Motion } from "@/components/Lazy";
@@ -42,7 +42,8 @@ export default async function CaseStudyPage({ params }: { params: Promise<{ slug
   if (!study) notFound();
 
   const index = work.findIndex((w) => w.slug === slug);
-  const next = work[(index + 1) % work.length];
+  // Missions run in archive order; the last one hands back to the journey instead of looping.
+  const next = work[index + 1];
   const meta = [
     { label: "Context", value: study.context },
     { label: "Period", value: study.period },
@@ -166,12 +167,14 @@ export default async function CaseStudyPage({ params }: { params: Promise<{ slug
           </div>
 
           <Link
-            href={`/work/${next.slug}`}
+            href={next ? `/work/${next.slug}` : "/#bridge-loadout"}
             className="group mt-32 block border-t border-line pt-10"
           >
-            <span className="pixel text-muted">Next mission ▶</span>
+            <span className="pixel text-muted">
+              {next ? "Next mission ▶" : `All missions cleared · Next: ${levelLabel("loadout")} ▶`}
+            </span>
             <span className="display mt-3 flex items-baseline gap-6 text-[clamp(3rem,9vw,8rem)] font-extrabold uppercase tracking-[-0.035em] transition-colors group-hover:text-accent">
-              {next.title}
+              {next ? next.title : "Back to the journey"}
               <span aria-hidden="true" className="text-[0.5em] transition-transform duration-500 group-hover:translate-x-3">
                 →
               </span>

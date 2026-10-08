@@ -22,7 +22,7 @@ export function Transit({ to, next, savePoint }: TransitProps) {
   const line = profile.transitions[to];
   if (!line) return null;
   return (
-    <div className="relative pb-4 sm:pb-8">
+    <div id={`bridge-${to}`} className="relative pb-4 sm:pb-8">
       <div className="mx-auto w-full max-w-[1440px] px-5 sm:px-8 lg:px-12">
         <div className="max-w-[42rem] lg:w-[50%]">
           <span aria-hidden="true" className="trail block h-32 sm:h-44" />
